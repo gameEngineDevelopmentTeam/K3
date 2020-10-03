@@ -1,9 +1,7 @@
 package itoh.engine
 
-class Timer(var lastLoopTime: Double) {
-    init {
-        var lastLoopTime = getTime()
-    }
+class Timer() {
+    var lastLoopTime: Double = 0.0
 
     fun initialization(): Unit {
         var lastLoopTime = getTime()
