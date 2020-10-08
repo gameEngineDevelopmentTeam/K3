@@ -8,8 +8,8 @@ fun main() {
     try {
         val vSync = true
         val gameLogic: GameLogic = Game()
-        val gameEng = GameEngine("GAME", 600, 480, vSync, gameLogic)
-        gameEng.run()
+        val gameEngine = GameEngine("ITOH", 600, 480, vSync, gameLogic)
+        gameEngine.run()
     } catch (e: Exception) {
         e.printStackTrace()
         exitProcess(1)

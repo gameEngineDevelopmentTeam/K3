@@ -16,13 +16,11 @@ class Game : GameLogic {
         renderer.initialization()
     }
 
-    override fun input(window: Window?) {
-        if (window != null) {
-            direction = when {
-                window.isKeyPressed(GLFW.GLFW_KEY_UP) -> 1
-                window.isKeyPressed(GLFW.GLFW_KEY_DOWN) -> -1
-                else -> 0
-            }
+    override fun input(window: Window) {
+        direction = when {
+            window.isKeyPressed(GLFW.GLFW_KEY_UP) -> 1
+            window.isKeyPressed(GLFW.GLFW_KEY_DOWN) -> -1
+            else -> 0
         }
     }
 
@@ -35,17 +33,12 @@ class Game : GameLogic {
         }
     }
 
-    override fun render(window: Window?) {
-        if (window != null) {
-            if (window.isResized()) {
-                GL11.glViewport(0, 0, window.getWidth(), window.getHeight())
-                window.setResized(false)
-            }
+    override fun render(window: Window) {
+        if (window.isResized()) {
+            GL11.glViewport(0, 0, window.getWidth(), window.getHeight())
+            window.setResized(false)
         }
-        if (window != null) {
-            window.setClearColor(color, color, color, 0.0f)
-        }
+        window.setClearColor(color, color, color, 0.0f)
         renderer.clear()
     }
-
 }

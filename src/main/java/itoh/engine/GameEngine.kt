@@ -5,7 +5,7 @@ open class GameEngine(windowTitle: String,
                       height: Int,
                       vSync: Boolean,
                       private val gameLogic: GameLogic) : Runnable {
-    private val targetFPS: Int = 75
+    private val targetFPS: Int = 60
     private val targetUPS: Int = 30
     private val window: Window = Window(windowTitle, width, height, vSync)
     private val timer: Timer = Timer()
@@ -32,8 +32,7 @@ open class GameEngine(windowTitle: String,
         val running: Boolean = true
 
         while (running && !window.windowShouldClose()!!) {
-            elapsedTime = timer.getElapsedTime()
-            accumulator += elapsedTime
+            accumulator += timer.getElapsedTime()
             input()
             while (accumulator >= interval) {
                 update(interval)
@@ -41,7 +40,7 @@ open class GameEngine(windowTitle: String,
             }
             render()
             if (!window.isvSync()) {
-                sync();
+                sync()
             }
         }
     }
