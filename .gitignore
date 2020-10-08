@@ -1,2 +1,4 @@
 /.idea/
 /UML/*.lock
+*.class
+*.bak
