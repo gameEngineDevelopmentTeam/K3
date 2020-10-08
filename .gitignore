@@ -1,4 +1,3 @@
 /.idea/
 /UML/*.lock
-/UML/png/GameEngineUML/itoh/engine/*.png.bak
-/UML/png/GameEngineUML/itoh/game/*.png.bak
+/UML/*/*.png.bak

@@ -1,7 +1,5 @@
 package itoh.engine
 
-import java.lang.Exception
-
 open class GameEngine : Runnable {
     val TARGET_FPS: Int = 75
     val TARGET_UPS: Int = 30
@@ -38,7 +36,41 @@ open class GameEngine : Runnable {
 
         while (running && !window.windowShouldClose()!!) {
             elapsedTime = timer.getElapsedTime()
+            accumulator += elapsedTime
+            input()
+            while (accumulator >= interval) {
+                update(interval)
+                accumulator -= interval
+            }
+            render()
+            if (!window.isvSync()) {
+                sync();
+            }
         }
+    }
+
+    protected fun sync() {
+        val loopSlot = 1f / TARGET_FPS
+        val endTime = timer.lastLoopTime + loopSlot
+        while (timer.getTime() < endTime) {
+            try {
+                Thread.sleep(1)
+            } catch (ie: InterruptedException) {
+            }
+        }
+    }
+
+    protected open fun input() {
+        gameLogic.input(window)
+    }
+
+    protected open fun update(interval: Float) {
+        gameLogic.update(interval)
+    }
+
+    protected open fun render() {
+        gameLogic.render(window)
+        window.update()
     }
 
 }

@@ -122,7 +122,15 @@ class Window {
         return resized
     }
 
-    private fun setResized(resized: Boolean): Unit {
+    fun getWidth(): Int {
+        return width
+    }
+
+    fun getHeight(): Int {
+        return height
+    }
+
+    fun setResized(resized: Boolean): Unit {
         this.resized = resized
     }
 
