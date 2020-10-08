@@ -1,16 +1,17 @@
 package itoh.game
 
 import itoh.engine.GameEngine
-import itoh.engine.IGameLogic
+import itoh.engine.GameLogic
+import kotlin.system.exitProcess
 
 fun main() {
     try {
         val vSync = true
-        val gameLogic: IGameLogic = Game()
+        val gameLogic: GameLogic = Game()
         val gameEng = GameEngine("GAME", 600, 480, vSync, gameLogic)
         gameEng.run()
-    } catch (excp: Exception) {
-        excp.printStackTrace()
-        System.exit(-1)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        exitProcess(1)
     }
 }

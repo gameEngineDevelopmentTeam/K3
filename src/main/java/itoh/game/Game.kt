@@ -1,29 +1,27 @@
 package itoh.game
 
-import itoh.engine.IGameLogic
+import itoh.engine.GameLogic
 import itoh.engine.Window
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11
 
 
-class Game : IGameLogic {
+class Game : GameLogic {
     private var direction = 0
     private var color = 0.0f
-    private val renderer: Renderer
+    private val renderer: Renderer = Renderer()
 
     @Throws(Exception::class)
-    override fun initialization():Unit {
+    override fun initialization() {
         renderer.initialization()
     }
 
     override fun input(window: Window?) {
         if (window != null) {
-            direction = if (window.isKeyPressed(GLFW.GLFW_KEY_UP)) {
-                1
-            } else if (window.isKeyPressed(GLFW.GLFW_KEY_DOWN)) {
-                -1
-            } else {
-                0
+            direction = when {
+                window.isKeyPressed(GLFW.GLFW_KEY_UP) -> 1
+                window.isKeyPressed(GLFW.GLFW_KEY_DOWN) -> -1
+                else -> 0
             }
         }
     }
@@ -50,7 +48,4 @@ class Game : IGameLogic {
         renderer.clear()
     }
 
-    init {
-        renderer = Renderer()
-    }
 }

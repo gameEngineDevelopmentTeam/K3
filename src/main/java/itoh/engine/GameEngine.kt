@@ -1,19 +1,16 @@
 package itoh.engine
 
-open class GameEngine : Runnable {
-    val TARGET_FPS: Int = 75
-    val TARGET_UPS: Int = 30
-    val window: Window
-    val timer: Timer
-    val gameLogic: IGameLogic
+open class GameEngine(windowTitle: String,
+                      width: Int,
+                      height: Int,
+                      vSync: Boolean,
+                      private val gameLogic: GameLogic) : Runnable {
+    private val targetFPS: Int = 75
+    private val targetUPS: Int = 30
+    private val window: Window = Window(windowTitle, width, height, vSync)
+    private val timer: Timer = Timer()
 
-    constructor(windowTitle: String, width: Int, height: Int, vSync: Boolean, gameLogic: IGameLogic) {
-        window = Window(windowTitle, width, height, vSync)
-        this.gameLogic = gameLogic
-        this.timer = Timer()
-    }
-
-    override fun run(): Unit {
+    override fun run() {
         try {
             initialization()
             gameLoop()
@@ -22,17 +19,17 @@ open class GameEngine : Runnable {
         }
     }
 
-    protected fun initialization(): Unit {
+    private fun initialization() {
         window.initialization()
         timer.initialization()
         gameLogic.initialization()
     }
 
-    protected fun gameLoop(): Unit {
+    private fun gameLoop() {
         var elapsedTime: Float
         var accumulator: Float = 0f
-        val interval: Float = 1f / TARGET_UPS
-        var running: Boolean = true
+        val interval: Float = 1f / targetUPS
+        val running: Boolean = true
 
         while (running && !window.windowShouldClose()!!) {
             elapsedTime = timer.getElapsedTime()
@@ -49,8 +46,8 @@ open class GameEngine : Runnable {
         }
     }
 
-    protected fun sync() {
-        val loopSlot = 1f / TARGET_FPS
+    private fun sync() {
+        val loopSlot = 1f / targetFPS
         val endTime = timer.lastLoopTime + loopSlot
         while (timer.getTime() < endTime) {
             try {
@@ -72,5 +69,4 @@ open class GameEngine : Runnable {
         gameLogic.render(window)
         window.update()
     }
-
 }

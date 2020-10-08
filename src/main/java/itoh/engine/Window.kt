@@ -36,27 +36,16 @@ import org.lwjgl.opengl.GL11.glClearColor
 import org.lwjgl.system.MemoryUtil.NULL
 
 
-class Window {
-    private val title: String
-    private var width: Int
-    private var height: Int
+class Window(private val title: String, private var width: Int, private var height: Int, private var vSync: Boolean) {
     private var windowHandle: Long?
     private var resized: Boolean
-    private var vSync: Boolean
 
-    constructor(title: String,
-                width: Int,
-                height: Int,
-                vSync: Boolean) {
-        this.title = title
-        this.width = width
-        this.height = height
+    init {
         this.windowHandle = null
         this.resized = false
-        this.vSync = vSync
     }
 
-    public fun initialization(): Unit {
+    fun initialization(){
         GLFWErrorCallback.createPrint(System.err).set()
         if (!glfwInit())
             throw IllegalStateException("GLFWの初期化に失敗しました.")
@@ -106,7 +95,7 @@ class Window {
         glClearColor(.0f, .0f, .0f, .0f)
     }
 
-    fun setClearColor(r: Float, g: Float, b: Float, a: Float): Unit {
+    fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
         glClearColor(r, g, b, a)
     }
 
@@ -130,7 +119,7 @@ class Window {
         return height
     }
 
-    fun setResized(resized: Boolean): Unit {
+    fun setResized(resized: Boolean) {
         this.resized = resized
     }
 
@@ -138,7 +127,7 @@ class Window {
         return vSync
     }
 
-    fun update(): Unit {
+    fun update() {
         windowHandle?.let { glfwSwapBuffers(it) }
         glfwPollEvents()
     }
