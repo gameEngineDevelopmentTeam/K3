@@ -37,15 +37,15 @@ import org.lwjgl.system.MemoryUtil.NULL
 
 
 class Window(private val title: String, private var width: Int, private var height: Int, private var vSync: Boolean) {
-    private var windowHandle: Long?
+    private var windowHandle: Long
     private var resized: Boolean
 
     init {
-        this.windowHandle = null
+        this.windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
         this.resized = false
     }
 
-    fun initialization(){
+    fun initialization() {
         GLFWErrorCallback.createPrint(System.err).set()
         if (!glfwInit())
             throw IllegalStateException("GLFWの初期化に失敗しました.")
@@ -61,13 +61,13 @@ class Window(private val title: String, private var width: Int, private var heig
             throw RuntimeException("ウィンドウの作成に失敗しました.")
         }
 
-        GLFW.glfwSetFramebufferSizeCallback(windowHandle!!) { window: Long, width: Int, height: Int ->
+        GLFW.glfwSetFramebufferSizeCallback(windowHandle) { window: Long, width: Int, height: Int ->
             this.width = width
             this.height = height
             this.setResized(true)
         }
 
-        glfwSetKeyCallback(windowHandle!!) { window: Long, key: Int, scancode: Int, action: Int, mods: Int ->
+        glfwSetKeyCallback(windowHandle) { window: Long, key: Int, scancode: Int, action: Int, mods: Int ->
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true)
             }
@@ -77,18 +77,18 @@ class Window(private val title: String, private var width: Int, private var heig
                 ?: throw RuntimeException("err")
 
         glfwSetWindowPos(
-                windowHandle!!,
+                windowHandle,
                 (vidMode.width() - width) / 2,
                 (vidMode.height() - height) / 2
         )
 
-        glfwMakeContextCurrent(windowHandle!!)
+        glfwMakeContextCurrent(windowHandle)
 
         if (isvSync()) {
             glfwSwapInterval(1)
         }
 
-        glfwShowWindow(windowHandle!!)
+        glfwShowWindow(windowHandle)
 
         GL.createCapabilities()
 
@@ -100,11 +100,11 @@ class Window(private val title: String, private var width: Int, private var heig
     }
 
     fun isKeyPressed(keyCode: Int): Boolean {
-        return windowHandle?.let { glfwGetKey(it, keyCode) } == GLFW_PRESS
+        return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS
     }
 
     fun windowShouldClose(): Boolean? {
-        return windowHandle?.let { glfwWindowShouldClose(it) }
+        return glfwWindowShouldClose(windowHandle)
     }
 
     fun isResized(): Boolean {
@@ -128,7 +128,7 @@ class Window(private val title: String, private var width: Int, private var heig
     }
 
     fun update() {
-        windowHandle?.let { glfwSwapBuffers(it) }
+        glfwSwapBuffers(windowHandle)
         glfwPollEvents()
     }
 }

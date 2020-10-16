@@ -1,5 +1,7 @@
 package itoh.engine
 
+import itoh.game.Renderer
+
 open class GameEngine(windowTitle: String,
                       width: Int,
                       height: Int,
@@ -16,6 +18,8 @@ open class GameEngine(windowTitle: String,
             gameLoop()
         } catch (e: Exception) {
             e.printStackTrace()
+        }finally {
+            cleanup()
         }
     }
 
@@ -26,12 +30,9 @@ open class GameEngine(windowTitle: String,
     }
 
     private fun gameLoop() {
-        var elapsedTime: Float
         var accumulator: Float = 0f
         val interval: Float = 1f / targetUPS
-        val running: Boolean = true
-
-        while (running && !window.windowShouldClose()!!) {
+        while (!window.windowShouldClose()!!) {
             accumulator += timer.getElapsedTime()
             input()
             while (accumulator >= interval) {
@@ -43,6 +44,10 @@ open class GameEngine(windowTitle: String,
                 sync()
             }
         }
+    }
+
+    protected open fun cleanup(){
+        gameLogic.cleanup()
     }
 
     private fun sync() {

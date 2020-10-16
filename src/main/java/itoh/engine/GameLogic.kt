@@ -5,4 +5,5 @@ interface GameLogic {
     fun input(window: Window)
     fun update(interval: Float)
     fun render(window: Window)
+    fun cleanup()
 }

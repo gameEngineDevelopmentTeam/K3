@@ -3,10 +3,9 @@ package itoh.game
 import itoh.engine.GameLogic
 import itoh.engine.Window
 import org.lwjgl.glfw.GLFW
-import org.lwjgl.opengl.GL11
 
 
-class Game : GameLogic {
+open class Game : GameLogic {
     private var direction = 0
     private var color = 0.0f
     private val renderer: Renderer = Renderer()
@@ -34,11 +33,11 @@ class Game : GameLogic {
     }
 
     override fun render(window: Window) {
-        if (window.isResized()) {
-            GL11.glViewport(0, 0, window.getWidth(), window.getHeight())
-            window.setResized(false)
-        }
         window.setClearColor(color, color, color, 0.0f)
-        renderer.clear()
+        renderer.render(window)
+    }
+
+    override fun cleanup() {
+        renderer.cleanup()
     }
 }
