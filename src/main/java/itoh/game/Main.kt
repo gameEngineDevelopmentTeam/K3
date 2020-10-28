@@ -2,6 +2,8 @@ package itoh.game
 
 import itoh.engine.GameEngine
 import itoh.engine.GameLogic
+import itoh.engine.graph.Mesh
+import itoh.engine.graph.poly.Obj3D
 import kotlin.system.exitProcess
 
 fun main() {

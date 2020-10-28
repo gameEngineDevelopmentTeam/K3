@@ -1,12 +1,12 @@
 package itoh.engine
 
-import itoh.game.Renderer
-
-open class GameEngine(windowTitle: String,
-                      width: Int,
-                      height: Int,
-                      vSync: Boolean,
-                      private val gameLogic: GameLogic) : Runnable {
+open class GameEngine(
+        windowTitle: String,
+        width: Int,
+        height: Int,
+        vSync: Boolean,
+        private val gameLogic: GameLogic
+) : Runnable {
     private val targetFPS: Int = 60
     private val targetUPS: Int = 30
     private val window: Window = Window(windowTitle, width, height, vSync)
@@ -18,7 +18,7 @@ open class GameEngine(windowTitle: String,
             gameLoop()
         } catch (e: Exception) {
             e.printStackTrace()
-        }finally {
+        } finally {
             cleanup()
         }
     }
@@ -26,7 +26,7 @@ open class GameEngine(windowTitle: String,
     private fun initialization() {
         window.initialization()
         timer.initialization()
-        gameLogic.initialization()
+        gameLogic.initialization(window)
     }
 
     private fun gameLoop() {
@@ -46,7 +46,7 @@ open class GameEngine(windowTitle: String,
         }
     }
 
-    protected open fun cleanup(){
+    protected open fun cleanup() {
         gameLogic.cleanup()
     }
 

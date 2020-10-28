@@ -1,6 +1,9 @@
 package itoh.engine.graph
 
 import org.lwjgl.opengl.GL11.GL_FLOAT
+import org.lwjgl.opengl.GL11.GL_TRIANGLES
+import org.lwjgl.opengl.GL11.GL_UNSIGNED_INT
+import org.lwjgl.opengl.GL11.glDrawElements
 import org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER
 import org.lwjgl.opengl.GL15.glDeleteBuffers
 import org.lwjgl.opengl.GL20.glDisableVertexAttribArray
@@ -73,6 +76,12 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
         return vertexCount
     }
 
+    fun render() {
+        glBindVertexArray(getVaoId())
+        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0)
+        glBindVertexArray(0)
+    }
+
     fun cleanUp() {
         glDisableVertexAttribArray(0)
 
@@ -86,5 +95,4 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
         glBindVertexArray(0)
         glDeleteVertexArrays(vaoId)
     }
-
 }

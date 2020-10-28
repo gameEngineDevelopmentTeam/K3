@@ -2,48 +2,63 @@ package itoh.game
 
 import itoh.engine.Utils
 import itoh.engine.Window
-import itoh.engine.graph.Mesh
-import itoh.engine.graph.ShaderProgram
+import itoh.engine.graph.Shader
+import itoh.engine.graph.poly.Obj3D
+import itoh.engine.graph.poly.Transformation
 import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
-import org.lwjgl.opengl.GL11.GL_TRIANGLES
-import org.lwjgl.opengl.GL11.GL_UNSIGNED_INT
 import org.lwjgl.opengl.GL11.glClear
-import org.lwjgl.opengl.GL11.glDrawElements
 import org.lwjgl.opengl.GL11.glViewport
-import org.lwjgl.opengl.GL30.glBindVertexArray
 
 
 open class Renderer {
-    var shaderProgram: ShaderProgram = ShaderProgram()
+    private val fov = Math.toRadians(60.0).toFloat()
+    private val zNear = 0.01f
+    private val zFar = 1000f
+    private var transformation: Transformation = Transformation()
+    var shader: Shader = Shader()
 
-    @Throws(java.lang.Exception::class)
-    fun initialization() {
-        shaderProgram.createVertexShader(Utils.loadResource("/vertex.glsl"))
-        shaderProgram.createFragmentShader(Utils.loadResource("/fragment.glsl"))
-        shaderProgram.link()
+    fun initialization(window: Window) {
+        shader.createVertexShader(Utils.loadResource("vertex.glsl"))
+        shader.createFragmentShader(Utils.loadResource("fragment.glsl"))
+        shader.link()
+
+        shader.createUniform("projectionMatrix");
+        shader.createUniform("worldMatrix");
+
+        window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     open fun clear() {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
     }
 
-    open fun render(window: Window, mesh: Mesh) {
+    open fun render(window: Window, obj3D: Array<Obj3D>) {
         clear()
         if (window.isResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight())
             window.setResized(false)
         }
-        shaderProgram.bind()
+        shader.bind()
 
-        glBindVertexArray(mesh.getVaoId())
-        glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0)
+        val projectionMatrix = transformation.getProjectionMatrix(fov, window.getWidth().toFloat(), window.getHeight().toFloat(), zNear, zFar)
+        shader.setUniform("projectionMatrix", projectionMatrix)
 
-        glBindVertexArray(0)
-        shaderProgram.unbind()
+        
+        for (gameItem in obj3D) {
+            
+            val worldMatrix = transformation.getWorldMatrix(
+                    gameItem.getPosition(),
+                    gameItem.getRotation(),
+                    gameItem.getScale())
+            shader.setUniform("worldMatrix", worldMatrix)
+            
+            gameItem.getMesh().render()
+        }
+        shader.unbind()
     }
 
     open fun cleanup() {
-        shaderProgram.cleanup()
+        shader.cleanup()
     }
 }
