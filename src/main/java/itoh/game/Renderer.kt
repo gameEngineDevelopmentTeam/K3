@@ -17,7 +17,6 @@ import org.lwjgl.opengl.GL30.glBindVertexArray
 open class Renderer {
     var shaderProgram: Shader = Shader()
 
-    @Throws(java.lang.Exception::class)
     fun initialization() {
         shaderProgram.createVertexShader(Utils.loadResource("/vertex.glsl"))
         shaderProgram.createFragmentShader(Utils.loadResource("/fragment.glsl"))

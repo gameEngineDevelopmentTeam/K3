@@ -25,19 +25,15 @@ open class Shader {
     private var vertexShaderId: Int = 0
     private var fragmentShaderId: Int = 0
 
-
-    @Throws(java.lang.Exception::class)
     fun createVertexShader(shaderCode: String) {
         vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER)
     }
 
-    @Throws(java.lang.Exception::class)
     fun createFragmentShader(shaderCode: String) {
         fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER)
     }
 
-    @Throws(java.lang.Exception::class)
-    protected fun createShader(shaderCode: String, shaderType: Int): Int {
+    fun createShader(shaderCode: String, shaderType: Int): Int {
         programId = glCreateProgram()
         if (programId == 0) {
             throw Exception("Could not create shader.")
@@ -55,7 +51,6 @@ open class Shader {
         return shaderId
     }
 
-    @Throws(java.lang.Exception::class)
     open fun link() {
         glLinkProgram(programId)
         if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {

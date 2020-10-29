@@ -7,7 +7,7 @@ open class GameEngine(
         vSync: Boolean,
         private val gameLogic: GameLogic
 ) : Runnable {
-    private val targetFPS: Int = 60
+    private val targetFPS: Int = 75600
     private val targetUPS: Int = 30
     private val window: Window = Window(windowTitle, width, height, vSync)
     private val timer: Timer = Timer()
