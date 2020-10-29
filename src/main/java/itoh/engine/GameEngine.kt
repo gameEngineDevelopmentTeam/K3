@@ -1,5 +1,7 @@
 package itoh.engine
 
+import org.lwjgl.glfw.GLFW
+
 open class GameEngine(
         windowTitle: String,
         width: Int,
@@ -7,10 +9,12 @@ open class GameEngine(
         vSync: Boolean,
         private val gameLogic: GameLogic
 ) : Runnable {
-    private val targetFPS: Int = 60
-    private val targetUPS: Int = 30
+    private val targetFPS: Int = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor())?.refreshRate()
+            ?: throw RuntimeException("err")  //モニタのリフレッシュレート
+    private val targetUPS: Int = 30  //現在のフレームレート 固定
     private val window: Window = Window(windowTitle, width, height, vSync)
     private val timer: Timer = Timer()
+
 
     override fun run() {
         try {

@@ -27,13 +27,12 @@ import org.lwjgl.system.MemoryStack
 
 
 open class Shader {
-    private var programId: Int = 0
+    private var programId: Int = glCreateProgram()
     private var vertexShaderId: Int = 0
     private var fragmentShaderId: Int = 0
     private lateinit var uniforms: Map<String, Int>
 
     init {
-        programId = glCreateProgram()
         if (programId == 0) {
             throw Exception("シェーダの作成に失敗")
         }
@@ -54,7 +53,6 @@ open class Shader {
             }
         }
     }
-
 
     fun createVertexShader(shaderCode: String) {
         vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER)

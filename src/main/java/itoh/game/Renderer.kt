@@ -12,9 +12,9 @@ import org.lwjgl.opengl.GL11.glViewport
 
 
 open class Renderer {
-    private val fov = Math.toRadians(60.0).toFloat()
-    private val zNear = 0.01f
-    private val zFar = 1000f
+    private val fov = Math.toRadians(60.0).toFloat()  // 視野角
+    private val zNear = 0.01f  // 最小距離
+    private val zFar = 1000f  // 最大距離
     private var transformation: Transformation = Transformation()
     var shader: Shader = Shader()
 
