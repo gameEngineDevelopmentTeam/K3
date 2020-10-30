@@ -37,11 +37,10 @@ import org.lwjgl.system.MemoryUtil.NULL
 
 
 class Window(private val title: String, private var width: Int, private var height: Int, private var vSync: Boolean) {
-    private var windowHandle: Long
+    private var windowHandle: Long = 0L
     private var resized: Boolean
 
     init {
-        this.windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
         this.resized = false
     }
 
@@ -57,18 +56,17 @@ class Window(private val title: String, private var width: Int, private var heig
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE)
         windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
-        if (windowHandle == NULL) {
+        if (windowHandle == NULL || windowHandle == 0L) {
             throw RuntimeException("ウィンドウの作成に失敗しました.")
         }
 
-        /*
         GLFW.glfwSetFramebufferSizeCallback(windowHandle) { _: Long, width: Int, height: Int ->
             this.width = width
             this.height = height
             this.setResized(true)
-        }*/
+        }
 
-        glfwSetKeyCallback(windowHandle) { window: Long, key: Int, scancode: Int, action: Int, mods: Int ->
+        glfwSetKeyCallback(windowHandle) { window: Long, key: Int, _: Int, action: Int, _: Int ->
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true)
             }
