@@ -34,44 +34,55 @@ import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL11.GL_TRUE
 import org.lwjgl.opengl.GL11.glClearColor
 import org.lwjgl.system.MemoryUtil.NULL
+import kotlin.system.exitProcess
 
 
 class Window(private val title: String, private var width: Int, private var height: Int, private var vSync: Boolean) {
-    private var windowHandle: Long = 0L
-    private var resized: Boolean
+    private var windowHandle: Long = glfwCreateWindow(width, height, title, NULL, NULL)
+    /* width -> ウィンドウの幅
+     * height -> ウィンドウの高さ
+     * title -> ウィンドウタイトル
+     * monitor -> !フルスクリーン -> NULL
+     * share -> !別ウィンドウとリソースを共有 -> NULL
+     * ウィンドウ作成に失敗した場合NULLが返る
+    */
 
-    init {
-        this.resized = false
-    }
+    private var resized: Boolean = false // ウィンドウリサイズフラグ　現状未使用
 
     fun initialization() {
-        GLFWErrorCallback.createPrint(System.err).set()
-        if (!glfwInit())
-            throw IllegalStateException("GLFWの初期化に失敗しました.")
-        glfwDefaultWindowHints()
+        if (!glfwInit()){  // GLFWの初期化を行う すべてのglfw関数を呼ぶ前に呼ぶ
+            System.err.println("GLFWの初期化に失敗しました.")
+            exitProcess(1)
+        }
+
+        glfwDefaultWindowHints()  // ウィンドウヒントをデフォルト値に設定する
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE)
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2)
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE)
-        windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
-        if (windowHandle == NULL || windowHandle == 0L) {
-            throw RuntimeException("ウィンドウの作成に失敗しました.")
+
+        if (windowHandle == NULL) {
+            System.err.println("ウィンドウの作成に失敗しました.")
+            exitProcess(1)
         }
 
+        /*ウィンドウリサイズ*/
         GLFW.glfwSetFramebufferSizeCallback(windowHandle) { _: Long, width: Int, height: Int ->
             this.width = width
             this.height = height
             this.setResized(true)
         }
 
+        /*ウィンドウクローズ*/
         glfwSetKeyCallback(windowHandle) { window: Long, key: Int, _: Int, action: Int, _: Int ->
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true)
             }
         }
 
+        /*VidMode*/
         val vidMode: GLFWVidMode = glfwGetVideoMode(glfwGetPrimaryMonitor())
                 ?: throw RuntimeException("err")
 
@@ -81,17 +92,17 @@ class Window(private val title: String, private var width: Int, private var heig
                 (vidMode.height() - height) / 2
         )
 
-        glfwMakeContextCurrent(windowHandle)
+        glfwMakeContextCurrent(windowHandle)  //引数に取ったウィンドウを処理対象にする
 
         if (isvSync()) {
             glfwSwapInterval(1)
         }
 
-        glfwShowWindow(windowHandle)
+        glfwShowWindow(windowHandle)  // ウィンドウを表示する
 
-        GL.createCapabilities()
+        GL.createCapabilities()  // OpenGLの関数呼び出しの前に呼ぶ
 
-        glClearColor(.0f, .0f, .0f, .0f)
+        glClearColor(.0f, .0f, .0f, .0f)  // ウィンドウ背景色
     }
 
     fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
