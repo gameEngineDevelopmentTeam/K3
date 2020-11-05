@@ -15,12 +15,16 @@ import org.lwjgl.opengl.GL30.glBindVertexArray
 
 
 open class Renderer {
-    var shaderProgram: Shader = Shader()
+    private var shader: Shader
+
+    init {
+        shader = Shader()
+    }
 
     fun initialization() {
-        shaderProgram.createVertexShader(Utils.loadResource("/vertex.glsl"))
-        shaderProgram.createFragmentShader(Utils.loadResource("/fragment.glsl"))
-        shaderProgram.link()
+        shader.createVertexShader(Utils.loadResource("vertex.glsl"))
+        shader.createFragmentShader(Utils.loadResource("fragment.glsl"))
+        shader.link()
     }
 
     open fun clear() {
@@ -29,20 +33,20 @@ open class Renderer {
 
     open fun render(window: Window, mesh: Mesh) {
         clear()
-        if (window.isResized()) {
+        if (window.getResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight())
             window.setResized(false)
         }
-        shaderProgram.bind()
+        shader.bind()
 
         glBindVertexArray(mesh.getVaoId())
         glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0)
 
         glBindVertexArray(0)
-        shaderProgram.unbind()
+        shader.unbind()
     }
 
     open fun cleanup() {
-        shaderProgram.cleanup()
+        shader.cleanup()
     }
 }

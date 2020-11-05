@@ -5,7 +5,7 @@ import itoh.engine.Window
 import itoh.engine.graph.Mesh
 
 open class Game : GameLogic {
-    private var color = 0.0f
+    private val bgColor = .0f
     private val renderer: Renderer = Renderer()
     private lateinit var mesh: Mesh
 
@@ -38,7 +38,7 @@ open class Game : GameLogic {
     }
 
     override fun render(window: Window) {
-        window.setClearColor(color, color, color, 0.0f)
+        window.setClearColor(bgColor, bgColor, bgColor, 0.0f)
         renderer.render(window, mesh)
     }
 

@@ -32,7 +32,7 @@ open class GameEngine(
     private fun gameLoop() {
         var accumulator: Float = 0f
         val interval: Float = 1f / targetUPS
-        while (!window.windowShouldClose()!!) {
+        while (!window.getWindowShouldClose()!!) {
             accumulator += timer.getElapsedTime()
             input()
             while (accumulator >= interval) {
@@ -40,7 +40,7 @@ open class GameEngine(
                 accumulator -= interval
             }
             render()
-            if (!window.isvSync()) {
+            if (!window.getVSync()) {
                 sync()
             }
         }
@@ -54,10 +54,7 @@ open class GameEngine(
         val loopSlot = 1f / targetFPS
         val endTime = timer.lastLoopTime + loopSlot
         while (timer.getTime() < endTime) {
-            try {
-                Thread.sleep(1)
-            } catch (ie: InterruptedException) {
-            }
+            Thread.sleep(1)
         }
     }
 

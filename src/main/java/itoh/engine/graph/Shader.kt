@@ -20,67 +20,62 @@ import org.lwjgl.opengl.GL20.glShaderSource
 import org.lwjgl.opengl.GL20.glUseProgram
 import org.lwjgl.opengl.GL20.glValidateProgram
 
-open class Shader {
-    private var programId: Int = 0
-    private var vertexShaderId: Int = 0
-    private var fragmentShaderId: Int = 0
+class Shader {
+    private var programId: Int
+    private var vertexShaderId: Int
+    private var fragmentShaderId: Int
 
-    fun createVertexShader(shaderCode: String) {
-        vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER)
+    init {
+        programId = 0
+        vertexShaderId = 0
+        fragmentShaderId = 0
     }
 
-    fun createFragmentShader(shaderCode: String) {
-        fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER)
-    }
-
-    fun createShader(shaderCode: String, shaderType: Int): Int {
-        programId = glCreateProgram()
+    private fun createShader(shaderCode: String, shaderType: Int): Int {
+        programId = glCreateProgram()  // お前いい加減にしろよ!!!
         if (programId == 0) {
-            throw Exception("Could not create shader.")
+            throw Exception("シェーダプログラムの作成に失敗.")
         }
+
         val shaderId: Int = glCreateShader(shaderType)
         if (shaderId == 0) {
-            throw java.lang.Exception("Error creating shader. Type: $shaderType")
+            throw Exception("シェーダの作成に失敗 Type: $shaderType")
         }
+
         glShaderSource(shaderId, shaderCode)
         glCompileShader(shaderId)
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == 0) {
-            throw java.lang.Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024))
+            throw Exception("シェーダのコンパイルに失敗 エラー: " + glGetShaderInfoLog(shaderId, 1024))
         }
         glAttachShader(programId, shaderId)
         return shaderId
     }
 
-    open fun link() {
+    public fun createVertexShader(shaderCode: String): Unit {
+        vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER)
+    }
+
+    public fun createFragmentShader(shaderCode: String): Unit {
+        fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER)
+    }
+
+    public fun link(): Unit {
         glLinkProgram(programId)
-        if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {
+        if (glGetProgrami(programId, GL_LINK_STATUS) == 0)
             throw java.lang.Exception("Error linking Shader code: " + glGetProgramInfoLog(programId, 1024))
-        }
-        if (vertexShaderId != 0) {
-            glDetachShader(programId, vertexShaderId)
-        }
-        if (fragmentShaderId != 0) {
-            glDetachShader(programId, fragmentShaderId)
-        }
+        if (vertexShaderId != 0) glDetachShader(programId, vertexShaderId)
+        if (fragmentShaderId != 0) glDetachShader(programId, fragmentShaderId)
         glValidateProgram(programId)
-        if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
+        if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0)
             println("Warning validating Shader code: " + glGetProgramInfoLog(programId, 1024))
-        }
     }
 
-    open fun bind() {
-        glUseProgram(programId)
-    }
+    public fun bind(): Unit = glUseProgram(programId)
 
-    open fun unbind() {
-        glUseProgram(0)
-    }
+    public fun unbind(): Unit = glUseProgram(0)
 
-    open fun cleanup() {
+    public fun cleanup(): Unit {
         unbind()
-        if (programId != 0) {
-            glDeleteProgram(programId)
-        }
+        if (programId != 0) glDeleteProgram(programId)
     }
-
 }
