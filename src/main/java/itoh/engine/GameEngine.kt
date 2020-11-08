@@ -1,5 +1,7 @@
 package itoh.engine
 
+import org.lwjgl.glfw.GLFW
+
 open class GameEngine(
         windowTitle: String,
         width: Int,
@@ -7,10 +9,11 @@ open class GameEngine(
         vSync: Boolean,
         private val gameLogic: GameLogic
 ) : Runnable {
-    private val targetFPS: Int = 75600
-    private val targetUPS: Int = 30
+    private val targetFPS: Int = 75
+    private val targetUPS: Int = 30  //現在のフレームレート 固定
     private val window: Window = Window(windowTitle, width, height, vSync)
     private val timer: Timer = Timer()
+
 
     override fun run() {
         try {
@@ -26,13 +29,13 @@ open class GameEngine(
     private fun initialization() {
         window.initialization()
         timer.initialization()
-        gameLogic.initialization()
+        gameLogic.initialization(window)
     }
 
     private fun gameLoop() {
         var accumulator: Float = 0f
         val interval: Float = 1f / targetUPS
-        while (!window.getWindowShouldClose()!!) {
+        while (!window.windowShouldClose()!!) {
             accumulator += timer.getElapsedTime()
             input()
             while (accumulator >= interval) {
@@ -40,7 +43,7 @@ open class GameEngine(
                 accumulator -= interval
             }
             render()
-            if (!window.getVSync()) {
+            if (!window.isvSync()) {
                 sync()
             }
         }
@@ -54,7 +57,10 @@ open class GameEngine(
         val loopSlot = 1f / targetFPS
         val endTime = timer.lastLoopTime + loopSlot
         while (timer.getTime() < endTime) {
-            Thread.sleep(1)
+            try {
+                Thread.sleep(1)
+            } catch (ie: InterruptedException) {
+            }
         }
     }
 
