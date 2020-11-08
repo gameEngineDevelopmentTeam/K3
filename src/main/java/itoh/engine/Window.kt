@@ -38,7 +38,7 @@ import kotlin.system.exitProcess
 
 
 class Window(private val title: String, private var width: Int, private var height: Int, private var vSync: Boolean) {
-    private var windowHandle: Long = glfwCreateWindow(width, height, title, NULL, NULL)
+    private var windowHandle: Long = 0L
     /* width -> ウィンドウの幅
      * height -> ウィンドウの高さ
      * title -> ウィンドウタイトル
@@ -63,7 +63,8 @@ class Window(private val title: String, private var width: Int, private var heig
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE)
 
-        if (windowHandle == NULL) {
+        windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
+        if (windowHandle == NULL || windowHandle == 0L) {
             System.err.println("ウィンドウの作成に失敗しました.")
             exitProcess(1)
         }

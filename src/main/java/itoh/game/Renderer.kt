@@ -16,12 +16,14 @@ open class Renderer {
     private val zNear = 0.01f  // 最小距離
     private val zFar = 1000f  // 最大距離
     private var transformation: Transformation = Transformation()
-    var shader: Shader = Shader()
+    private lateinit var shader: Shader
 
     fun initialization(window: Window) {
+        shader = Shader()
         shader.createVertexShader(Utils.loadResource("vertex.glsl"))
         shader.createFragmentShader(Utils.loadResource("fragment.glsl"))
         shader.link()
+
 
         shader.createUniform("projectionMatrix");
         shader.createUniform("worldMatrix");

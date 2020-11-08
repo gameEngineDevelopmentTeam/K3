@@ -29,7 +29,7 @@ open class Shader {
     private var programId: Int = glCreateProgram()
     private var vertexShaderId: Int = 0
     private var fragmentShaderId: Int = 0
-    private lateinit var uniforms: Map<String, Int>
+    private var uniforms: Map<String, Int> = mutableMapOf<String, Int>()
 
     init {
         if (programId == 0) {
@@ -42,7 +42,7 @@ open class Shader {
         if (uniformLocation < 0) {
             throw java.lang.Exception("Uniformの発見に失敗:$uniformName")
         }
-        uniforms = uniforms + (uniformName to uniformLocation)
+        uniforms.getOrDefault(uniformName, uniformLocation)
     }
 
     open fun setUniform(uniformName: String?, value: Matrix4f) {
