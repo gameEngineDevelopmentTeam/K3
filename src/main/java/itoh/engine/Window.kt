@@ -138,6 +138,11 @@ class Window(private val title: String, private var width: Int, private var heig
         }
     }
 
+    internal fun getWindowHandle():Long{
+        return windowHandle
+    }
+
+
     fun getWindowShouldClose(): Boolean {
         return glfwWindowShouldClose(windowHandle)
     }
