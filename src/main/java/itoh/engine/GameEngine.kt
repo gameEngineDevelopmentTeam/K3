@@ -1,7 +1,5 @@
 package itoh.engine
 
-import org.lwjgl.glfw.GLFW
-
 open class GameEngine(
         windowTitle: String,
         width: Int,
@@ -9,11 +7,10 @@ open class GameEngine(
         vSync: Boolean,
         private val gameLogic: GameLogic
 ) : Runnable {
-    private val targetFPS: Int = 75
-    private val targetUPS: Int = 30  //現在のフレームレート 固定
-    private val window: Window = Window(windowTitle, width, height, vSync)
-    private val timer: Timer = Timer()
-
+    private val targetFPS: Int
+    private val targetUPS: Int
+    private val window: Window
+    private val timer: Timer
 
     override fun run() {
         try {
@@ -26,16 +23,16 @@ open class GameEngine(
         }
     }
 
-    private fun initialization() {
+    internal fun initialization() {
         window.initialization()
         timer.initialization()
         gameLogic.initialization(window)
     }
 
-    private fun gameLoop() {
+    internal fun gameLoop() {
         var accumulator: Float = 0f
-        val interval: Float = 1f / targetUPS
-        while (!window.windowShouldClose()!!) {
+        val interval: Float = 1f / targetUPS.toFloat()
+        while (!window.getWindowShouldClose()) {
             accumulator += timer.getElapsedTime()
             input()
             while (accumulator >= interval) {
@@ -43,37 +40,41 @@ open class GameEngine(
                 accumulator -= interval
             }
             render()
-            if (!window.isvSync()) {
+            if (!window.getVSync()) {
                 sync()
             }
         }
     }
 
-    protected open fun cleanup() {
+    internal fun cleanup() {
         gameLogic.cleanup()
     }
 
     private fun sync() {
-        val loopSlot = 1f / targetFPS
-        val endTime = timer.lastLoopTime + loopSlot
+        val loopSlot: Float = 1f / targetFPS.toFloat()
+        val endTime: Double = timer.lastLoopTime + loopSlot
         while (timer.getTime() < endTime) {
-            try {
-                Thread.sleep(1)
-            } catch (ie: InterruptedException) {
-            }
+            Thread.sleep(1)
         }
     }
 
-    protected open fun input() {
+    internal fun input() {
         gameLogic.input(window)
     }
 
-    protected open fun update(interval: Float) {
+    internal fun update(interval: Float) {
         gameLogic.update(interval)
     }
 
-    protected open fun render() {
+    internal fun render() {
         gameLogic.render(window)
         window.update()
+    }
+
+    init {
+        targetFPS = 75
+        targetUPS =1
+        window = Window(windowTitle, width, height, vSync)
+        timer = Timer()
     }
 }

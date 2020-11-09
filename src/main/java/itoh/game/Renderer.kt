@@ -2,9 +2,10 @@ package itoh.game
 
 import itoh.engine.Utils
 import itoh.engine.Window
-import itoh.engine.graph.Shader
-import itoh.engine.graph.poly.Obj3D
-import itoh.engine.graph.poly.Transformation
+import itoh.engine.polygon.three_dimensional.Obj3D
+import itoh.engine.polygon.three_dimensional.Transformation
+import itoh.engine.polygon.two_dimensional.Shader
+import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
 import org.lwjgl.opengl.GL11.glClear
@@ -12,55 +13,63 @@ import org.lwjgl.opengl.GL11.glViewport
 
 
 open class Renderer {
-    private val fov = Math.toRadians(60.0).toFloat()  // 視野角
-    private val zNear = 0.01f  // 最小距離
-    private val zFar = 1000f  // 最大距離
-    private var transformation: Transformation = Transformation()
-    private lateinit var shader: Shader
-
-    fun initialization(window: Window) {
-        shader = Shader()
-        shader.createVertexShader(Utils.loadResource("vertex.glsl"))
-        shader.createFragmentShader(Utils.loadResource("fragment.glsl"))
-        shader.link()
-
-
-        shader.createUniform("projectionMatrix");
-        shader.createUniform("worldMatrix");
-
-        window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    companion object {
+        private val fov: Float = Math.toRadians(60.0).toFloat()
+        private val zNear: Float = 0.01f
+        private val zFar: Float = 1000.0f
     }
+    private val transformation: Transformation
+    private lateinit var shader: Shader
 
     open fun clear() {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
     }
 
-    open fun render(window: Window, obj3D: Array<Obj3D>) {
+    open fun render(window: Window, objects: Array<Obj3D>) {
         clear()
-        if (window.isResized()) {
+        if (window.getResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight())
             window.setResized(false)
         }
         shader.bind()
 
-        val projectionMatrix = transformation.getProjectionMatrix(fov, window.getWidth().toFloat(), window.getHeight().toFloat(), zNear, zFar)
+        val projectionMatrix: Matrix4f = transformation.getProjectionMatrix(
+                fov = fov,
+                width = window.getWidth(),
+                height = window.getHeight(),
+                zNear = zNear,
+                zFar = zFar
+        )
         shader.setUniform("projectionMatrix", projectionMatrix)
 
-        
-        for (gameItem in obj3D) {
-            
-            val worldMatrix = transformation.getWorldMatrix(
-                    gameItem.getPosition(),
-                    gameItem.getRotation(),
-                    gameItem.getScale())
+        for (i in objects) {
+            val worldMatrix: Matrix4f = transformation.getWorldMatrix(
+                    i.getPosition(),
+                    i.getRotation(),
+                    i.getScale()
+            )
             shader.setUniform("worldMatrix", worldMatrix)
-            
-            gameItem.getMesh().render()
+            i.getMesh().render()
         }
         shader.unbind()
     }
 
     open fun cleanup() {
         shader.cleanup()
+    }
+
+    fun initialization(window: Window) {
+        shader = Shader()
+        shader.createVertexShader(Utils.loadResource("vertex.glsl"))
+        shader.createFragmentShader(Utils.loadResource("fragment.glsl"))
+        shader.link()
+        shader.createUniform("projectionMatrix")
+        shader.createUniform("worldMatrix")
+        window.setClearColor(.0f, .0f, .0f, .0f)
+
+    }
+
+    init {
+        transformation = Transformation()
     }
 }

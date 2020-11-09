@@ -1,4 +1,4 @@
-package itoh.engine.graph
+package itoh.engine.polygon.two_dimensional
 
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
@@ -28,12 +28,14 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
     private val idxVboId: Int
     private val vertexCount: Int
 
+    private lateinit var posBuffer: FloatBuffer
+    private lateinit var colorBuffer: FloatBuffer
+    private lateinit var indicesBuffer: IntBuffer
+
     init {
-        var posBuffer: FloatBuffer? = null
-        var colorBuffer: FloatBuffer? = null
-        var indicesBuffer: IntBuffer? = null
         try {
             vertexCount = indices.size
+
             vaoId = glGenVertexArrays()
             glBindVertexArray(vaoId)
 
@@ -41,7 +43,7 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
             posBuffer = MemoryUtil.memAllocFloat(positions.size)
             posBuffer.put(positions).flip()
             glBindBuffer(GL_ARRAY_BUFFER, posVboId)
-            glBufferData(GL_ARRAY_BUFFER, posBuffer!!, GL_STATIC_DRAW)
+            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW)
             glEnableVertexAttribArray(0)
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0)
 
@@ -49,7 +51,7 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
             colorBuffer = MemoryUtil.memAllocFloat(colors.size)
             colorBuffer.put(colors).flip()
             glBindBuffer(GL_ARRAY_BUFFER, colorVboId)
-            glBufferData(GL_ARRAY_BUFFER, colorBuffer!!, GL_STATIC_DRAW)
+            glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW)
             glEnableVertexAttribArray(1)
             glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0)
 
@@ -57,7 +59,7 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
             indicesBuffer = MemoryUtil.memAllocInt(indices.size)
             indicesBuffer.put(indices).flip()
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId)
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer!!, GL_STATIC_DRAW)
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW)
 
             glBindBuffer(GL_ARRAY_BUFFER, 0)
             glBindVertexArray(0)
@@ -68,18 +70,18 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
         }
     }
 
+    fun render(): Unit {
+        glBindVertexArray(getVaoId())
+        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0)
+        glBindVertexArray(0)
+    }
+
     fun getVaoId(): Int {
         return vaoId
     }
 
     fun getVertexCount(): Int {
         return vertexCount
-    }
-
-    fun render() {
-        glBindVertexArray(getVaoId())
-        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0)
-        glBindVertexArray(0)
     }
 
     fun cleanUp() {
@@ -95,4 +97,5 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
         glBindVertexArray(0)
         glDeleteVertexArrays(vaoId)
     }
+
 }
