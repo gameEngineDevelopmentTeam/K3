@@ -11,6 +11,7 @@ open class GameEngine(
     private val targetUPS: Int
     private val window: Window
     private val timer: Timer
+    private val keyboard:KeyboardInput
 
     override fun run() {
         try {
@@ -73,8 +74,9 @@ open class GameEngine(
 
     init {
         targetFPS = 75
-        targetUPS =1
+        targetUPS = 30
         window = Window(windowTitle, width, height, vSync)
         timer = Timer()
+        keyboard = KeyboardInput(window)
     }
 }

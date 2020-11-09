@@ -2,8 +2,10 @@ package itoh.game
 
 import itoh.engine.GameLogic
 import itoh.engine.Window
+import itoh.engine.KeyboardInput
 import itoh.engine.polygon.three_dimensional.Obj3D
 import itoh.engine.polygon.two_dimensional.Mesh
+import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.GLFW_KEY_A
 import org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN
 import org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT
@@ -74,19 +76,19 @@ open class Game : GameLogic {
     override fun update(interval: Float) {
         for (i in objects) {
             // Update position
-            val itemPos = i.getPosition()
-            val posx: Float = itemPos.x + dX * 0.01f
-            val posy: Float = itemPos.y + dY * 0.01f
-            val posz: Float = itemPos.z + dZ * 0.01f
-            i.setPosition(posx, posy, posz)
+            val itemPos: Vector3f = i.getPosition()
+            val posX: Float = itemPos.x + dX * 0.01f
+            val posY: Float = itemPos.y + dY * 0.01f
+            val posZ: Float = itemPos.z + dZ * 0.01f
+            i.setPosition(posX, posY, posZ)
 
             // Update scale
-            var scale = i.getScale()
-            scale += scale * 0.05f
-            if (scale < 0) {
-                scale = 0f
+            var scaleU = i.getScale()
+            scaleU += scale * 0.05f
+            if (scaleU < 0) {
+                scaleU = 0f
             }
-            i.setScale(scale)
+            i.setScale(scaleU)
 
             // Update rotation angle
             var rotation = i.getRotation().z + 1.5f
