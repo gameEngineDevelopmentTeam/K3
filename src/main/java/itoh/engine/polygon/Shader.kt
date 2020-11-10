@@ -19,13 +19,14 @@ import org.lwjgl.opengl.GL20.glGetShaderi
 import org.lwjgl.opengl.GL20.glGetUniformLocation
 import org.lwjgl.opengl.GL20.glLinkProgram
 import org.lwjgl.opengl.GL20.glShaderSource
+import org.lwjgl.opengl.GL20.glUniform1i
 import org.lwjgl.opengl.GL20.glUniformMatrix4fv
 import org.lwjgl.opengl.GL20.glUseProgram
 import org.lwjgl.opengl.GL20.glValidateProgram
 import org.lwjgl.system.MemoryStack
 
 class Shader {
-    private val programId: Int
+    private val programId: Int = glCreateProgram()
     private var vertexShaderId = 0
     private var fragmentShaderId = 0
     private val uniforms: MutableMap<String, Int>
@@ -42,6 +43,10 @@ class Shader {
             glUniformMatrix4fv(uniforms[uniformName]!!, false,
                     value[stack.mallocFloat(16)])
         }
+    }
+
+    public fun setUniform(uniformName: String, value: Int) {
+        glUniform1i(uniforms[uniformName]!!, value)
     }
 
     public fun createVertexShader(shaderCode: String) {
@@ -105,7 +110,6 @@ class Shader {
     }
 
     init {
-        programId = glCreateProgram()
         if (programId == 0) {
             throw Exception("シェーダプログラムの作成に失敗")
         } else {

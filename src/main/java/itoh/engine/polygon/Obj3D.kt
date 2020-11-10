@@ -3,7 +3,7 @@ package itoh.engine.polygon
 import org.joml.Vector3f
 
 class Obj3D constructor(private val mesh: Mesh) {
-    private val position: Vector3f
+    private val position: Vector3f = Vector3f()
     fun getPosition(): Vector3f {
         return position
     }
@@ -39,7 +39,6 @@ class Obj3D constructor(private val mesh: Mesh) {
     }
 
     init {
-        position = Vector3f()
         scale = 1f
         rotation = Vector3f()
     }

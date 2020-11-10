@@ -7,10 +7,10 @@ open class GameEngine(
         vSync: Boolean,
         private val gameLogic: GameLogic
 ) : Runnable {
-    private val targetFPS: Int
-    private val targetUPS: Int
-    private val window: Window
-    private val timer: Timer
+    private val targetFPS: Int = 75
+    private val targetUPS: Int = 30
+    private val window: Window = Window(windowTitle, width, height, vSync)
+    private val timer: Timer = Timer()
     private val keyboard:KeyboardInput
 
     public override fun run() {
@@ -74,10 +74,6 @@ open class GameEngine(
     }
 
     init {
-        targetFPS = 75
-        targetUPS = 30
-        window = Window(windowTitle, width, height, vSync)
-        timer = Timer()
         keyboard = KeyboardInput(window)
     }
 }
