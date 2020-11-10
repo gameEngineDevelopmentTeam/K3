@@ -1,6 +1,5 @@
-package itoh.engine.polygon.three_dimensional
+package itoh.engine.polygon
 
-import itoh.engine.polygon.two_dimensional.Mesh
 import org.joml.Vector3f
 
 class Obj3D constructor(private val mesh: Mesh) {

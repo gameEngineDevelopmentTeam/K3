@@ -2,9 +2,9 @@ package itoh.game
 
 import itoh.engine.Utils
 import itoh.engine.Window
-import itoh.engine.polygon.three_dimensional.Obj3D
-import itoh.engine.polygon.three_dimensional.Transformation
-import itoh.engine.polygon.two_dimensional.Shader
+import itoh.engine.polygon.Obj3D
+import itoh.engine.polygon.Transformation
+import itoh.engine.polygon.Shader
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
@@ -65,7 +65,7 @@ open class Renderer {
         shader.link()
         shader.createUniform("projectionMatrix")
         shader.createUniform("worldMatrix")
-        window.setClearColor(.0f, .0f, .0f, .0f)
+        window.setClearColor(.3f, .3f, .3f, 1.0f)
 
     }
 

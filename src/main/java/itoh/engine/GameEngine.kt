@@ -13,7 +13,7 @@ open class GameEngine(
     private val timer: Timer
     private val keyboard:KeyboardInput
 
-    override fun run() {
+    public override fun run() {
         try {
             initialization()
             gameLoop()
@@ -24,13 +24,13 @@ open class GameEngine(
         }
     }
 
-    internal fun initialization() {
+    private fun initialization() {
         window.initialization()
         timer.initialization()
         gameLogic.initialization(window)
     }
 
-    internal fun gameLoop() {
+    private fun gameLoop() {
         var accumulator: Float = 0f
         val interval: Float = 1f / targetUPS.toFloat()
         while (!window.getWindowShouldClose()) {
@@ -47,8 +47,9 @@ open class GameEngine(
         }
     }
 
-    internal fun cleanup() {
+    private fun cleanup() {
         gameLogic.cleanup()
+        window.cleanup()
     }
 
     private fun sync() {
@@ -59,15 +60,15 @@ open class GameEngine(
         }
     }
 
-    internal fun input() {
+    private fun input() {
         gameLogic.input(window)
     }
 
-    internal fun update(interval: Float) {
+    private fun update(interval: Float) {
         gameLogic.update(interval)
     }
 
-    internal fun render() {
+    private fun render() {
         gameLogic.render(window)
         window.update()
     }

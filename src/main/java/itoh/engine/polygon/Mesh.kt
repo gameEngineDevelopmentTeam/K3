@@ -1,4 +1,4 @@
-package itoh.engine.polygon.two_dimensional
+package itoh.engine.polygon
 
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
@@ -70,21 +70,21 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
         }
     }
 
-    fun render(): Unit {
+    internal fun render(): Unit {
         glBindVertexArray(getVaoId())
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0)
         glBindVertexArray(0)
     }
 
-    fun getVaoId(): Int {
+    private fun getVaoId(): Int {
         return vaoId
     }
 
-    fun getVertexCount(): Int {
+    private fun getVertexCount(): Int {
         return vertexCount
     }
 
-    fun cleanUp() {
+    internal fun cleanUp() {
         glDisableVertexAttribArray(0)
 
         //VBOを削除
@@ -97,5 +97,4 @@ class Mesh(positions: FloatArray, colors: FloatArray, indices: IntArray) {
         glBindVertexArray(0)
         glDeleteVertexArrays(vaoId)
     }
-
 }

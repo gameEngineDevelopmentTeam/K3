@@ -17,6 +17,7 @@
         <joml.version>1.9.25</joml.version>
         <native.target>natives-windows</native.target>
         <kotlin.version>1.4.10</kotlin.version>
+        <pngdecoder.version>1.0</pngdecoder.version>
     </properties>
 
     <dependencyManagement>
@@ -97,6 +98,11 @@
             <artifactId>kotlin-test</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.l33tlabs.twl</groupId>
+            <artifactId>pngdecoder</artifactId>
+            <version>${pngdecoder.version}</version>
         </dependency>
     </dependencies>
 

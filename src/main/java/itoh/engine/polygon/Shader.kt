@@ -1,4 +1,4 @@
-package itoh.engine.polygon.two_dimensional
+package itoh.engine.polygon
 
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL20.GL_COMPILE_STATUS
@@ -29,7 +29,7 @@ class Shader {
     private var vertexShaderId = 0
     private var fragmentShaderId = 0
     private val uniforms: MutableMap<String, Int>
-    fun createUniform(uniformName: String) {
+    public fun createUniform(uniformName: String) {
         val uniformLocation = glGetUniformLocation(programId, uniformName)
         if (uniformLocation < 0) {
             throw Exception("uniformが見つかりません:$uniformName")
@@ -37,39 +37,45 @@ class Shader {
         uniforms[uniformName] = uniformLocation
     }
 
-    fun setUniform(uniformName: String, value: Matrix4f) {
+    public fun setUniform(uniformName: String, value: Matrix4f) {
         MemoryStack.stackPush().use { stack ->
             glUniformMatrix4fv(uniforms[uniformName]!!, false,
                     value[stack.mallocFloat(16)])
         }
     }
 
-    fun createVertexShader(shaderCode: String) {
+    public fun createVertexShader(shaderCode: String) {
         vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER)
     }
 
-    fun createFragmentShader(shaderCode: String) {
+    public fun createFragmentShader(shaderCode: String) {
         fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER)
     }
 
-    protected fun createShader(shaderCode: String, shaderType: Int): Int {
+    private fun createShader(shaderCode: String, shaderType: Int): Int {
         val shaderId = glCreateShader(shaderType)
         if (shaderId == 0) {
             throw Exception("シェーダの作成に失敗: $shaderType")
+        } else {
+            println("シェーダの作成に成功 shaderType:$shaderType")
         }
         glShaderSource(shaderId, shaderCode)
         glCompileShader(shaderId)
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == 0) {
-            throw Exception("シェーダのコンパイルに失敗: " + glGetShaderInfoLog(shaderId, 1024))
+            throw Exception("シェーダのコンパイルに失敗: ${glGetShaderInfoLog(shaderId, 1024)}")
+        } else {
+            println("シェーダのコンパイルに成功")
         }
         glAttachShader(programId, shaderId)
         return shaderId
     }
 
-    fun link() {
+    public fun link() {
         glLinkProgram(programId)
         if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {
             throw Exception("シェーダのリンクに失敗: " + glGetProgramInfoLog(programId, 1024))
+        } else {
+            println("シェーダのリンクに成功")
         }
         if (vertexShaderId != 0) {
             glDetachShader(programId, vertexShaderId)
@@ -83,15 +89,15 @@ class Shader {
         }
     }
 
-    fun bind() {
+    public fun bind() {
         glUseProgram(programId)
     }
 
-    fun unbind() {
+    public fun unbind() {
         glUseProgram(0)
     }
 
-    fun cleanup() {
+    public fun cleanup() {
         unbind()
         if (programId != 0) {
             glDeleteProgram(programId)
@@ -101,7 +107,9 @@ class Shader {
     init {
         programId = glCreateProgram()
         if (programId == 0) {
-            throw Exception("シェーダの作成に失敗")
+            throw Exception("シェーダプログラムの作成に失敗")
+        } else {
+            println("シェーダプログラムの作成に成功 programID:$programId")
         }
         uniforms = HashMap()
     }

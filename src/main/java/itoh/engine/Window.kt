@@ -13,8 +13,8 @@ import org.lwjgl.glfw.GLFW.GLFW_RESIZABLE
 import org.lwjgl.glfw.GLFW.GLFW_VISIBLE
 import org.lwjgl.glfw.GLFW.glfwCreateWindow
 import org.lwjgl.glfw.GLFW.glfwDefaultWindowHints
+import org.lwjgl.glfw.GLFW.glfwDestroyWindow
 import org.lwjgl.glfw.GLFW.glfwGetKey
-import org.lwjgl.glfw.GLFW.glfwGetKeyScancode
 import org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor
 import org.lwjgl.glfw.GLFW.glfwGetVideoMode
 import org.lwjgl.glfw.GLFW.glfwInit
@@ -32,12 +32,14 @@ import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.opengl.GL.createCapabilities
+import org.lwjgl.opengl.GL11.GL_DEPTH_TEST
 import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL11.GL_RENDERER
 import org.lwjgl.opengl.GL11.GL_TRUE
 import org.lwjgl.opengl.GL11.GL_VENDOR
 import org.lwjgl.opengl.GL11.GL_VERSION
 import org.lwjgl.opengl.GL11.glClearColor
+import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.opengl.GL11.glGetString
 import org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION
 import org.lwjgl.system.MemoryUtil.NULL
@@ -46,7 +48,7 @@ import org.lwjgl.system.MemoryUtil.NULL
 class Window(private val title: String, private var width: Int, private var height: Int, private var vSync: Boolean) {
     private var windowHandle: Long = 0L
     private var resized: Boolean = false
-    private val k3EngineVersion: String = "0.1.9 build 33"
+    private val k3EngineVersion: String = "0.2.1 build 39"
 
     internal fun initialization() {
         GLFWErrorCallback.createPrint(System.err).set()
@@ -63,6 +65,7 @@ class Window(private val title: String, private var width: Int, private var heig
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE)
 
         windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
+        //windowHandle = glfwCreateWindow(2560, 1080, title, glfwGetPrimaryMonitor(), NULL)
         if (windowHandle == NULL || windowHandle == 0L) {
             throw RuntimeException("ウィンドウの作成に失敗しました.")
         }
@@ -100,7 +103,8 @@ class Window(private val title: String, private var width: Int, private var heig
 
         versionPrint()
 
-        glClearColor(.0f, .0f, .0f, .0f)
+        glClearColor(.3f, .3f, .3f, .3f)
+        glEnable(GL_DEPTH_TEST)
     }
 
     private fun versionPrint(): Unit {
@@ -116,50 +120,48 @@ class Window(private val title: String, private var width: Int, private var heig
         println("-------------------------------------------------")
     }
 
-    fun update() {
+    internal fun update() {
         glfwSwapBuffers(windowHandle)
         glfwPollEvents()
     }
 
-    fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
+    public fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
         glClearColor(r, g, b, a)
     }
 
-    fun setResized(resized: Boolean) {
+    public fun setResized(resized: Boolean) {
         this.resized = resized
     }
 
-    fun getKeyPressed(keyCode: Int): Boolean {
-        return if (glfwGetKey(windowHandle, keyCode) == GLFW_PRESS) {
-            println("pressed : ${glfwGetKeyScancode(keyCode)}")
-            true
-        } else {
-            false
-        }
+    public fun getKeyPressed(keyCode: Int): Boolean {
+        return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS
     }
 
-    internal fun getWindowHandle():Long{
+    internal fun getWindowHandle(): Long {
         return windowHandle
     }
 
-
-    fun getWindowShouldClose(): Boolean {
+    internal fun getWindowShouldClose(): Boolean {
         return glfwWindowShouldClose(windowHandle)
     }
 
-    fun getResized(): Boolean {
+    public fun getResized(): Boolean {
         return resized
     }
 
-    fun getWidth(): Int {
+    public fun getWidth(): Int {
         return width
     }
 
-    fun getHeight(): Int {
+    public fun getHeight(): Int {
         return height
     }
 
-    fun getVSync(): Boolean {
+    public fun getVSync(): Boolean {
         return vSync
+    }
+
+    internal fun cleanup() {
+        glfwDestroyWindow(windowHandle)
     }
 }
