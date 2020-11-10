@@ -79,29 +79,24 @@ open class Game : GameLogic {
         rY = 0
         rZ = 0
         r = false
-        when {
-            window.getKeyPressed(GLFW_KEY_UP) -> dY = 1
-            window.getKeyPressed(GLFW_KEY_DOWN) -> dY = -1
-            window.getKeyPressed(GLFW_KEY_LEFT) -> dX = -1
-            window.getKeyPressed(GLFW_KEY_RIGHT) -> dX = 1
-            window.getKeyPressed(GLFW_KEY_A) -> dZ = -1
-            window.getKeyPressed(GLFW_KEY_Q) -> dZ = 1
-            window.getKeyPressed(GLFW_KEY_Z) -> scale = -1
-            window.getKeyPressed(GLFW_KEY_X) -> scale = 1
-            window.getKeyPressed(GLFW_KEY_LEFT_SHIFT)->{
-                when{
-                    window.getKeyPressed(GLFW_KEY_R) -> rX = -1
-                    window.getKeyPressed(GLFW_KEY_T) -> rY = -1
-                    window.getKeyPressed(GLFW_KEY_Y) -> rZ = -1
-                }
-            }
-            window.getKeyPressed(GLFW_KEY_R) -> rX = 1
-            window.getKeyPressed(GLFW_KEY_T) -> rY = 1
-            window.getKeyPressed(GLFW_KEY_Y) -> rZ = 1
-            window.getKeyPressed(GLFW_KEY_U) -> {
-                r = true
-            }
+
+        if (window.getKeyPressed(GLFW_KEY_UP)) dY = 1
+        if (window.getKeyPressed(GLFW_KEY_DOWN)) dY = -1
+        if (window.getKeyPressed(GLFW_KEY_LEFT)) dX = -1
+        if (window.getKeyPressed(GLFW_KEY_RIGHT)) dX = 1
+        if (window.getKeyPressed(GLFW_KEY_A)) dZ = -1
+        if (window.getKeyPressed(GLFW_KEY_Q)) dZ = 1
+        if (window.getKeyPressed(GLFW_KEY_Z)) scale = -1
+        if (window.getKeyPressed(GLFW_KEY_X)) scale = 1
+        if (window.getKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+            if (window.getKeyPressed(GLFW_KEY_R)) rX = -1
+            if (window.getKeyPressed(GLFW_KEY_T)) rY = -1
+            if (window.getKeyPressed(GLFW_KEY_Y)) rZ = -1
         }
+        if (window.getKeyPressed(GLFW_KEY_R)) rX = 1
+        if (window.getKeyPressed(GLFW_KEY_T)) rY = 1
+        if (window.getKeyPressed(GLFW_KEY_Y)) rZ = 1
+        if (window.getKeyPressed(GLFW_KEY_U)) r = true
     }
 
     override fun update(interval: Float) {
@@ -138,8 +133,10 @@ open class Game : GameLogic {
             }
             i.setRotation(rRotation, yRotation, zRotation)
             if (r) {
+                i.setPosition(0f, 0f, -2f)
+                i.setScale(1f)
                 i.setRotation(0f, 0f, 0f)
-                r=false
+                r = false
             }
         }
     }
