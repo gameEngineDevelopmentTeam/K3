@@ -3,8 +3,8 @@ package itoh.game
 import itoh.engine.Utils
 import itoh.engine.Window
 import itoh.engine.polygon.Obj3D
-import itoh.engine.polygon.Shader
 import itoh.engine.polygon.Transformation
+import itoh.engine.polygon.Shader
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
@@ -15,11 +15,10 @@ import org.lwjgl.opengl.GL11.glViewport
 open class Renderer {
     companion object {
         private val fov: Float = Math.toRadians(60.0).toFloat()
-        private const val zNear: Float = 0.01f
-        private const val zFar: Float = 1000.0f
+        private val zNear: Float = 0.01f
+        private val zFar: Float = 1000.0f
     }
-
-    private val transformation: Transformation = Transformation()
+    private val transformation: Transformation
     private lateinit var shader: Shader
 
     open fun clear() {
@@ -43,7 +42,7 @@ open class Renderer {
         )
         shader.setUniform("projectionMatrix", projectionMatrix)
 
-        shader.setUniform("texture", 0)
+        shader.setUniform("Texture", 0)
 
         for (i in objects) {
             val worldMatrix: Matrix4f = transformation.getWorldMatrix(
@@ -61,14 +60,17 @@ open class Renderer {
         shader.cleanup()
     }
 
-    fun initialization() {
+    fun initialization(window: Window) {
         shader = Shader()
         shader.createVertexShader(Utils.loadResource("vertex.glsl"))
         shader.createFragmentShader(Utils.loadResource("fragment.glsl"))
         shader.link()
         shader.createUniform("projectionMatrix")
-        shader.createUniform("texture")
         shader.createUniform("worldMatrix")
+        shader.createUniform("Texture")
     }
 
+    init {
+        transformation = Transformation()
+    }
 }

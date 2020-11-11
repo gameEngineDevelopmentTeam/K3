@@ -8,8 +8,10 @@ import itoh.engine.polygon.Texture
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.GLFW_KEY_A
 import org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN
+import org.lwjgl.glfw.GLFW.GLFW_KEY_F
+import org.lwjgl.glfw.GLFW.GLFW_KEY_G
+import org.lwjgl.glfw.GLFW.GLFW_KEY_H
 import org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT
-import org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT
 import org.lwjgl.glfw.GLFW.GLFW_KEY_Q
 import org.lwjgl.glfw.GLFW.GLFW_KEY_R
 import org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT
@@ -60,25 +62,34 @@ open class Game : GameLogic {
 
         val texCoords = floatArrayOf(
                 0.0f, 0.0f,
-                0.0f, 0.5f,
-                0.5f, 0.5f,
-                0.5f, 0.0f,
-                0.0f, 0.0f,
-                0.5f, 0.0f,
-                0.0f, 0.5f,
-                0.5f, 0.5f,
-                0.0f, 0.5f,
-                0.5f, 0.5f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
                 0.0f, 1.0f,
-                0.5f, 1.0f,
+
                 0.0f, 0.0f,
-                0.0f, 0.5f,
-                0.5f, 0.0f,
-                0.5f, 0.5f,
-                0.5f, 0.0f,
-                1.0f, 0.0f,
-                0.5f, 0.5f,
-                1.0f, 0.5f
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+
+                0.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+
+                0.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+
+                0.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+
+                0.0f, 0.0f,
+                0.0f, 1.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f
         )
 
         val indices = intArrayOf(
@@ -89,7 +100,7 @@ open class Game : GameLogic {
                 16, 18, 19, 17, 16, 19,
                 4, 6, 7, 5, 4, 7,
         )
-        val texture = Texture("src/main/resources/grassBlock.png")
+        val texture = Texture("src/main/resources/lennaBlock.png")
         val mesh = Mesh(positions, texCoords, indices, texture)
         val obj = Obj3D(mesh)
         obj.setPosition(0f, 0f, -2f)
@@ -105,29 +116,22 @@ open class Game : GameLogic {
         rY = 0
         rZ = 0
         r = false
-        when {
-            window.getKeyPressed(GLFW_KEY_UP) -> dY = 1
-            window.getKeyPressed(GLFW_KEY_DOWN) -> dY = -1
-            window.getKeyPressed(GLFW_KEY_LEFT) -> dX = -1
-            window.getKeyPressed(GLFW_KEY_RIGHT) -> dX = 1
-            window.getKeyPressed(GLFW_KEY_A) -> dZ = -1
-            window.getKeyPressed(GLFW_KEY_Q) -> dZ = 1
-            window.getKeyPressed(GLFW_KEY_Z) -> scale = -1
-            window.getKeyPressed(GLFW_KEY_X) -> scale = 1
-            window.getKeyPressed(GLFW_KEY_LEFT_SHIFT) -> {
-                when {
-                    window.getKeyPressed(GLFW_KEY_R) -> rX = -1
-                    window.getKeyPressed(GLFW_KEY_T) -> rY = -1
-                    window.getKeyPressed(GLFW_KEY_Y) -> rZ = -1
-                }
-            }
-            window.getKeyPressed(GLFW_KEY_R) -> rX = 1
-            window.getKeyPressed(GLFW_KEY_T) -> rY = 1
-            window.getKeyPressed(GLFW_KEY_Y) -> rZ = 1
-            window.getKeyPressed(GLFW_KEY_U) -> {
-                r = true
-            }
-        }
+        if (window.getKeyPressed(GLFW_KEY_UP)) dY = 1
+        if (window.getKeyPressed(GLFW_KEY_DOWN)) dY = -1
+        if (window.getKeyPressed(GLFW_KEY_LEFT)) dX = -1
+        if (window.getKeyPressed(GLFW_KEY_RIGHT)) dX = 1
+        if (window.getKeyPressed(GLFW_KEY_A)) dZ = -1
+        if (window.getKeyPressed(GLFW_KEY_Q)) dZ = 1
+        if (window.getKeyPressed(GLFW_KEY_Z)) scale = -1
+        if (window.getKeyPressed(GLFW_KEY_X)) scale = 1
+        if (window.getKeyPressed(GLFW_KEY_F)) rX = -1
+        if (window.getKeyPressed(GLFW_KEY_G)) rY = -1
+        if (window.getKeyPressed(GLFW_KEY_H)) rZ = -1
+
+        if (window.getKeyPressed(GLFW_KEY_R)) rX = 1
+        if (window.getKeyPressed(GLFW_KEY_T)) rY = 1
+        if (window.getKeyPressed(GLFW_KEY_Y)) rZ = 1
+        if (window.getKeyPressed(GLFW_KEY_U)) r = true
     }
 
     override fun update(interval: Float) {
@@ -161,6 +165,8 @@ open class Game : GameLogic {
             }
             i.setRotation(rRotation, yRotation, zRotation)
             if (r) {
+                i.setPosition(0f, 0f, -2f)
+                i.setScale(1f)
                 i.setRotation(0f, 0f, 0f)
                 r = false
             }
