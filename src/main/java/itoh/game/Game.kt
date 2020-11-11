@@ -4,11 +4,14 @@ import itoh.engine.GameLogic
 import itoh.engine.Window
 import itoh.engine.polygon.Mesh
 import itoh.engine.polygon.Obj3D
+import itoh.engine.polygon.Texture
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.GLFW_KEY_A
 import org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN
+import org.lwjgl.glfw.GLFW.GLFW_KEY_F
+import org.lwjgl.glfw.GLFW.GLFW_KEY_G
+import org.lwjgl.glfw.GLFW.GLFW_KEY_H
 import org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT
-import org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT
 import org.lwjgl.glfw.GLFW.GLFW_KEY_Q
 import org.lwjgl.glfw.GLFW.GLFW_KEY_R
 import org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT
@@ -29,7 +32,7 @@ open class Game : GameLogic {
     private var rY: Int = 0
     private var rZ: Int = 0
     private var r: Boolean = false
-    private val renderer: Renderer
+    private val renderer: Renderer = Renderer()
     private lateinit var objects: Array<Obj3D>
 
     override fun initialization(window: Window) {
@@ -42,29 +45,63 @@ open class Game : GameLogic {
                 -0.5f, 0.5f, -0.5f,
                 0.5f, 0.5f, -0.5f,
                 -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f
+                0.5f, -0.5f, -0.5f,
+                -0.5f, 0.5f, -0.5f,
+                0.5f, 0.5f, -0.5f,
+                -0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,
+                0.5f, -0.5f, 0.5f,
+                -0.5f, 0.5f, 0.5f,
+                -0.5f, -0.5f, 0.5f,
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f, 0.5f,
+                0.5f, -0.5f, 0.5f
         )
 
-        val colors = floatArrayOf(
-                1.0f, 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 1.0f,
-                1.0f, 1.0f, 0.0f,
-                0.0f, 1.0f, 1.0f,
-                1.0f, 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 1.0f
+        val texCoords = floatArrayOf(
+                0.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+
+                0.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+
+                0.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+
+                0.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+
+                0.0f, 0.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+
+                0.0f, 0.0f,
+                0.0f, 1.0f,
+                1.0f, 1.0f,
+                1.0f, 1.0f
         )
 
         val indices = intArrayOf(
                 0, 1, 3, 3, 1, 2,
-                4, 0, 3, 5, 4, 3,
-                3, 2, 7, 5, 3, 7,
-                6, 1, 0, 6, 0, 4,
-                2, 1, 6, 2, 6, 7,
-                7, 6, 4, 7, 4, 5
+                8, 10, 11, 9, 8, 11,
+                12, 13, 7, 5, 12, 7,
+                14, 15, 6, 4, 14, 6,
+                16, 18, 19, 17, 16, 19,
+                4, 6, 7, 5, 4, 7,
         )
-        val mesh = Mesh(positions, colors, indices)
+        val texture = Texture("src/main/resources/lennaBlock.png")
+        val mesh = Mesh(positions, texCoords, indices, texture)
         val obj = Obj3D(mesh)
         obj.setPosition(0f, 0f, -2f)
         objects = arrayOf(obj)
@@ -79,7 +116,6 @@ open class Game : GameLogic {
         rY = 0
         rZ = 0
         r = false
-
         if (window.getKeyPressed(GLFW_KEY_UP)) dY = 1
         if (window.getKeyPressed(GLFW_KEY_DOWN)) dY = -1
         if (window.getKeyPressed(GLFW_KEY_LEFT)) dX = -1
@@ -88,11 +124,11 @@ open class Game : GameLogic {
         if (window.getKeyPressed(GLFW_KEY_Q)) dZ = 1
         if (window.getKeyPressed(GLFW_KEY_Z)) scale = -1
         if (window.getKeyPressed(GLFW_KEY_X)) scale = 1
-        if (window.getKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-            if (window.getKeyPressed(GLFW_KEY_R)) rX = -1
-            if (window.getKeyPressed(GLFW_KEY_T)) rY = -1
-            if (window.getKeyPressed(GLFW_KEY_Y)) rZ = -1
-        }
+
+        if (window.getKeyPressed(GLFW_KEY_F)) rX = -1
+        if (window.getKeyPressed(GLFW_KEY_G)) rY = -1
+        if (window.getKeyPressed(GLFW_KEY_H)) rZ = -1
+
         if (window.getKeyPressed(GLFW_KEY_R)) rX = 1
         if (window.getKeyPressed(GLFW_KEY_T)) rY = 1
         if (window.getKeyPressed(GLFW_KEY_Y)) rZ = 1
@@ -101,14 +137,12 @@ open class Game : GameLogic {
 
     override fun update(interval: Float) {
         for (i in objects) {
-            // Update position
             val itemPos: Vector3f = i.getPosition()
             val posX: Float = itemPos.x + dX * 0.01f
             val posY: Float = itemPos.y + dY * 0.01f
             val posZ: Float = itemPos.z + dZ * 0.01f
             i.setPosition(posX, posY, posZ)
 
-            // Update scale
             var scaleU = i.getScale()
             scaleU += scale * 0.05f
             if (scaleU < 0) {
@@ -116,7 +150,6 @@ open class Game : GameLogic {
             }
             i.setScale(scaleU)
 
-            // Update rotation angle
             var rRotation = i.getRotation().x + rX
             if (rRotation > 360) {
                 rRotation = 0f
@@ -152,7 +185,5 @@ open class Game : GameLogic {
         }
     }
 
-    init {
-        renderer = Renderer()
-    }
 }
+

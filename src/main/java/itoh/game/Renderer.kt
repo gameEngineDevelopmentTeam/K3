@@ -42,6 +42,8 @@ open class Renderer {
         )
         shader.setUniform("projectionMatrix", projectionMatrix)
 
+        shader.setUniform("Texture", 0)
+
         for (i in objects) {
             val worldMatrix: Matrix4f = transformation.getWorldMatrix(
                     i.getPosition(),
@@ -65,8 +67,7 @@ open class Renderer {
         shader.link()
         shader.createUniform("projectionMatrix")
         shader.createUniform("worldMatrix")
-        window.setClearColor(.3f, .3f, .3f, 1.0f)
-
+        shader.createUniform("Texture")
     }
 
     init {
