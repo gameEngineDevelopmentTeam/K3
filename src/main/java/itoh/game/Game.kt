@@ -124,6 +124,7 @@ open class Game : GameLogic {
         if (window.getKeyPressed(GLFW_KEY_Q)) dZ = 1
         if (window.getKeyPressed(GLFW_KEY_Z)) scale = -1
         if (window.getKeyPressed(GLFW_KEY_X)) scale = 1
+
         if (window.getKeyPressed(GLFW_KEY_F)) rX = -1
         if (window.getKeyPressed(GLFW_KEY_G)) rY = -1
         if (window.getKeyPressed(GLFW_KEY_H)) rZ = -1
