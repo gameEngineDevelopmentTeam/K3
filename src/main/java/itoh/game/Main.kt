@@ -8,5 +8,4 @@ fun main() {
     val gameLogic: GameLogic = Game()
     val gameEngine = GameEngine("ITOH", 600, 480, vSync, gameLogic)
     gameEngine.run()
-    //うおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおおお
 }
