@@ -2,3 +2,4 @@
 /UML/*.lock
 *.class
 *.bak
+/target/
