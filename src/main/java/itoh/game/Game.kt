@@ -93,7 +93,7 @@ open class Game : GameLogic {
                 1.0f, 0.0f,
                 1.0f, 1.0f,
                 0.0f, 1.0f,
-                0.0f, 0.0f,
+                0.0f, 0.0f
         )
 
         val indices = intArrayOf(
@@ -102,7 +102,7 @@ open class Game : GameLogic {
                 12, 13, 7, 5, 12, 7,
                 14, 15, 6, 4, 14, 6,
                 16, 18, 19, 17, 16, 19,
-                4, 6, 7, 5, 4, 7,
+                4, 6, 7, 5, 4, 7
         )
         val texture = Texture("src/main/resources/lennaBlock.png")
         val mesh = Mesh(positions, texCoords, indices, texture)
