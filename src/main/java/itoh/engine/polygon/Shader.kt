@@ -30,7 +30,7 @@ class Shader {
     private var vertexShaderId = 0
     private var fragmentShaderId = 0
     private val uniforms: MutableMap<String, Int>
-    public fun createUniform(uniformName: String) {
+    fun createUniform(uniformName: String) {
         val uniformLocation = glGetUniformLocation(programId, uniformName)
         if (uniformLocation < 0) {
             throw Exception("uniformが見つかりません:$uniformName")
@@ -38,22 +38,22 @@ class Shader {
         uniforms[uniformName] = uniformLocation
     }
 
-    public fun setUniform(uniformName: String, value: Matrix4f) {
+    fun setUniform(uniformName: String, value: Matrix4f) {
         MemoryStack.stackPush().use { stack ->
             glUniformMatrix4fv(uniforms[uniformName]!!, false,
                     value[stack.mallocFloat(16)])
         }
     }
 
-    public fun setUniform(uniformName: String, value: Int) {
+    fun setUniform(uniformName: String, value: Int) {
         glUniform1i(uniforms[uniformName]!!, value)
     }
 
-    public fun createVertexShader(shaderCode: String) {
+    fun createVertexShader(shaderCode: String) {
         vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER)
     }
 
-    public fun createFragmentShader(shaderCode: String) {
+    fun createFragmentShader(shaderCode: String) {
         fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER)
     }
 
@@ -75,7 +75,7 @@ class Shader {
         return shaderId
     }
 
-    public fun link() {
+    fun link() {
         glLinkProgram(programId)
         if (glGetProgrami(programId, GL_LINK_STATUS) == 0) {
             throw Exception("シェーダのリンクに失敗: " + glGetProgramInfoLog(programId, 1024))
@@ -94,15 +94,15 @@ class Shader {
         }
     }
 
-    public fun bind() {
+    fun bind() {
         glUseProgram(programId)
     }
 
-    public fun unbind() {
+    fun unbind() {
         glUseProgram(0)
     }
 
-    public fun cleanup() {
+    fun cleanup() {
         unbind()
         if (programId != 0) {
             glDeleteProgram(programId)

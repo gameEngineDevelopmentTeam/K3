@@ -10,10 +10,10 @@ open class GameEngine(
     private val targetFPS: Int = 75
     private val targetUPS: Int = 30
     private val window: Window = Window(windowTitle, width, height, vSync)
+    private val mouseInput = MouseInput()
     private val timer: Timer = Timer()
-    private val keyboard:KeyboardInput
 
-    public override fun run() {
+    override fun run() {
         try {
             initialization()
             gameLoop()
@@ -27,6 +27,7 @@ open class GameEngine(
     private fun initialization() {
         window.initialization()
         timer.initialization()
+        mouseInput.initialization(window)
         gameLogic.initialization(window)
     }
 
@@ -61,11 +62,12 @@ open class GameEngine(
     }
 
     private fun input() {
-        gameLogic.input(window)
+        mouseInput.input(window)
+        gameLogic.input(window, mouseInput)
     }
 
     private fun update(interval: Float) {
-        gameLogic.update(interval)
+        gameLogic.update(interval, mouseInput)
     }
 
     private fun render() {
@@ -73,7 +75,4 @@ open class GameEngine(
         window.update()
     }
 
-    init {
-        keyboard = KeyboardInput(window)
-    }
 }

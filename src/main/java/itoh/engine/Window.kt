@@ -107,7 +107,7 @@ class Window(private val title: String, private var width: Int, private var heig
         glEnable(GL_DEPTH_TEST)
     }
 
-    private fun versionPrint(): Unit {
+    private fun versionPrint() {
         println("-------------------------------------------------")
         println("Engine Version  : %-32s ".format(k3EngineVersion))
         println("Kotlin Version  : %-32s".format(KotlinVersion.CURRENT))
@@ -125,40 +125,40 @@ class Window(private val title: String, private var width: Int, private var heig
         glfwPollEvents()
     }
 
-    public fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
+    fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
         glClearColor(r, g, b, a)
     }
 
-    public fun setResized(resized: Boolean) {
+    fun setResized(resized: Boolean) {
         this.resized = resized
     }
 
-    public fun getKeyPressed(keyCode: Int): Boolean {
+    fun getKeyPressed(keyCode: Int): Boolean {
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS
-    }
-
-    internal fun getWindowHandle(): Long {
-        return windowHandle
     }
 
     internal fun getWindowShouldClose(): Boolean {
         return glfwWindowShouldClose(windowHandle)
     }
 
-    public fun getResized(): Boolean {
+    fun getResized(): Boolean {
         return resized
     }
 
-    public fun getWidth(): Int {
+    fun getWidth(): Int {
         return width
     }
 
-    public fun getHeight(): Int {
+    fun getHeight(): Int {
         return height
     }
 
-    public fun getVSync(): Boolean {
+    fun getVSync(): Boolean {
         return vSync
+    }
+
+    fun getWindowHandle(): Long {
+        return windowHandle
     }
 
     internal fun cleanup() {

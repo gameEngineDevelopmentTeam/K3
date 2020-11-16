@@ -75,7 +75,7 @@ class Mesh constructor(positions: FloatArray, texCoords: FloatArray, indices: In
         }
     }
 
-    internal fun render(): Unit {
+    internal fun render(){
         glActiveTexture(GL_TEXTURE0)
         glBindTexture(GL_TEXTURE_2D, texture.getId())
         glBindVertexArray(getVaoId())

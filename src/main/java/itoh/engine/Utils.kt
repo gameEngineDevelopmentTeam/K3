@@ -26,10 +26,5 @@ class Utils {
                     )
             )
         }
-
-        fun loadPng(fileName: String): PNGDecoder {
-            println("Load Resource   : $fileName")
-            return PNGDecoder(Utils::class.java.getResourceAsStream(fileName))
-        }
     }
 }

@@ -53,11 +53,11 @@ class Texture constructor(fileName: String) {
         }
     }
 
-    public fun bind(): Unit {
+    fun bind(){
         glBindTexture(GL_TEXTURE_2D, id)
     }
 
-    public fun getId(): Int {
+     fun getId(): Int {
         return id
     }
 

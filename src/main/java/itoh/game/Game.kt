@@ -1,62 +1,59 @@
 package itoh.game
 
 import itoh.engine.GameLogic
+import itoh.engine.MouseInput
 import itoh.engine.Window
+import itoh.engine.polygon.Camera
 import itoh.engine.polygon.Mesh
 import itoh.engine.polygon.Obj3D
 import itoh.engine.polygon.Texture
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.GLFW_KEY_A
-import org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN
-import org.lwjgl.glfw.GLFW.GLFW_KEY_F
-import org.lwjgl.glfw.GLFW.GLFW_KEY_G
-import org.lwjgl.glfw.GLFW.GLFW_KEY_H
-import org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT
-import org.lwjgl.glfw.GLFW.GLFW_KEY_Q
-import org.lwjgl.glfw.GLFW.GLFW_KEY_R
-import org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT
-import org.lwjgl.glfw.GLFW.GLFW_KEY_T
-import org.lwjgl.glfw.GLFW.GLFW_KEY_U
-import org.lwjgl.glfw.GLFW.GLFW_KEY_UP
+import org.lwjgl.glfw.GLFW.GLFW_KEY_D
+import org.lwjgl.glfw.GLFW.GLFW_KEY_S
+import org.lwjgl.glfw.GLFW.GLFW_KEY_W
 import org.lwjgl.glfw.GLFW.GLFW_KEY_X
-import org.lwjgl.glfw.GLFW.GLFW_KEY_Y
 import org.lwjgl.glfw.GLFW.GLFW_KEY_Z
 
 
 open class Game : GameLogic {
-    private var dX: Int = 0
-    private var dY: Int = 0
-    private var dZ: Int = 0
-    private var scale: Int = 0
+    companion object {
+        private val sensitivity = 0.2f
+        private val cameraPosStep = 0.05f
+    }
+
     private var rX: Int = 0
     private var rY: Int = 0
     private var rZ: Int = 0
     private var r: Boolean = false
     private val renderer: Renderer = Renderer()
     private lateinit var objects: Array<Obj3D>
+    private val cameraInc: Vector3f = Vector3f()
+    private val camera: Camera = Camera()
+
 
     override fun initialization(window: Window) {
         renderer.initialization(window)
         val positions = floatArrayOf(
-                -0.5f, 0.5f, 0.5f, //1f
-                -0.5f, -0.5f, 0.5f, //2f
-                0.5f, -0.5f, 0.5f, //3f
-                0.5f, 0.5f, 0.5f, //4f
+                -0.5f, 0.5f, 0.5f,
+                -0.5f, -0.5f, 0.5f,
+                0.5f, -0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,
 
-                -0.5f, 0.5f, -0.5f, //5bc
-                0.5f, 0.5f, -0.5f, //6bc
-                -0.5f, -0.5f, -0.5f, //7bc
-                0.5f, -0.5f, -0.5f, //8bc
+                -0.5f, 0.5f, -0.5f,
+                0.5f, 0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
 
-                -0.5f, 0.5f, -0.5f, //5b
-                0.5f, 0.5f, -0.5f, //6b
-                -0.5f, 0.5f, 0.5f, //1b
-                0.5f, 0.5f, 0.5f, //4b
+                -0.5f, 0.5f, -0.5f,
+                0.5f, 0.5f, -0.5f,
+                -0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,
 
-                0.5f, 0.5f, 0.5f, //4
-                0.5f, -0.5f, 0.5f, //3
-                -0.5f, 0.5f, 0.5f, //1
-                -0.5f, -0.5f, 0.5f,//2
+                0.5f, 0.5f, 0.5f,
+                0.5f, -0.5f, 0.5f,
+                -0.5f, 0.5f, 0.5f,
+                -0.5f, -0.5f, 0.5f,
 
                 -0.5f, -0.5f, -0.5f,
                 0.5f, -0.5f, -0.5f,
@@ -106,80 +103,63 @@ open class Game : GameLogic {
         )
         val texture = Texture("src/main/resources/lennaBlock.png")
         val mesh = Mesh(positions, texCoords, indices, texture)
-        val obj = Obj3D(mesh)
-        obj.setPosition(0f, 0f, -2f)
-        objects = arrayOf(obj)
+
+        val objects1: Obj3D = Obj3D(mesh)
+        objects1.setScale(.5f)
+        objects1.setPosition(0f, 0f, -2f)
+
+        val objects2: Obj3D = Obj3D(mesh)
+        objects2.setScale(.5f)
+        objects2.setPosition(.5f, .5f, -2f)
+
+        val objects3: Obj3D = Obj3D(mesh)
+        objects3.setScale(.5f)
+        objects3.setPosition(0f, 0f, -2.5f)
+
+        val objects4: Obj3D = Obj3D(mesh)
+        objects4.setScale(.5f)
+        objects4.setPosition(.5f, 0f, -2.5f)
+
+        objects = arrayOf(objects1, objects2, objects3, objects4)
     }
 
-    override fun input(window: Window) {
-        dX = 0
-        dY = 0
-        dZ = 0
-        scale = 0
-        rX = 0
-        rY = 0
-        rZ = 0
-        r = false
-        if (window.getKeyPressed(GLFW_KEY_UP)) dY = 1
-        if (window.getKeyPressed(GLFW_KEY_DOWN)) dY = -1
-        if (window.getKeyPressed(GLFW_KEY_LEFT)) dX = -1
-        if (window.getKeyPressed(GLFW_KEY_RIGHT)) dX = 1
-        if (window.getKeyPressed(GLFW_KEY_A)) dZ = -1
-        if (window.getKeyPressed(GLFW_KEY_Q)) dZ = 1
-        if (window.getKeyPressed(GLFW_KEY_Z)) scale = -1
-        if (window.getKeyPressed(GLFW_KEY_X)) scale = 1
-
-        if (window.getKeyPressed(GLFW_KEY_F)) rX = -1
-        if (window.getKeyPressed(GLFW_KEY_G)) rY = -1
-        if (window.getKeyPressed(GLFW_KEY_H)) rZ = -1
-
-        if (window.getKeyPressed(GLFW_KEY_R)) rX = 1
-        if (window.getKeyPressed(GLFW_KEY_T)) rY = 1
-        if (window.getKeyPressed(GLFW_KEY_Y)) rZ = 1
-        if (window.getKeyPressed(GLFW_KEY_U)) r = true
+    override fun input(window: Window, mouseInput: MouseInput) {
+        cameraInc.set(0f, 0f, 0f)
+        if (window.getKeyPressed(GLFW_KEY_W)) {
+            cameraInc.z = -1f
+        } else if (window.getKeyPressed(GLFW_KEY_S)) {
+            cameraInc.z = 1f
+        }
+        if (window.getKeyPressed(GLFW_KEY_A)) {
+            cameraInc.x = -1f
+        } else if (window.getKeyPressed(GLFW_KEY_D)) {
+            cameraInc.x = 1f
+        }
+        if (window.getKeyPressed(GLFW_KEY_Z)) {
+            cameraInc.y = -1f
+        } else if (window.getKeyPressed(GLFW_KEY_X)) {
+            cameraInc.y = 1f
+        }
     }
 
-    override fun update(interval: Float) {
-        for (i in objects) {
-            val itemPos: Vector3f = i.getPosition()
-            val posX: Float = itemPos.x + dX * 0.01f
-            val posY: Float = itemPos.y + dY * 0.01f
-            val posZ: Float = itemPos.z + dZ * 0.01f
-            i.setPosition(posX, posY, posZ)
-
-            var scaleU = i.getScale()
-            scaleU += scale * 0.05f
-            if (scaleU < 0) {
-                scaleU = 0f
-            }
-            i.setScale(scaleU)
-
-            var rRotation = i.getRotation().x + rX
-            if (rRotation > 360) {
-                rRotation = 0f
-            }
-
-            var yRotation = i.getRotation().y + rY
-            if (yRotation > 360) {
-                yRotation = 0f
-            }
-
-            var zRotation = i.getRotation().z + rZ
-            if (zRotation > 360) {
-                zRotation = 0f
-            }
-            i.setRotation(rRotation, yRotation, zRotation)
-            if (r) {
-                i.setPosition(0f, 0f, -2f)
-                i.setScale(1f)
-                i.setRotation(0f, 0f, 0f)
-                r = false
-            }
+    override fun update(interval: Float, mouseInput: MouseInput) {
+        camera.movePosition(
+                cameraInc.x * cameraPosStep,
+                cameraInc.y * cameraPosStep,
+                cameraInc.z * cameraPosStep
+        )
+        if (mouseInput.getRightButtonPressed()) {
+            val rotationV = mouseInput.getDisplayVec()
+            camera.movePosition(
+                    rotationV.x * sensitivity,
+                    rotationV.y * sensitivity,
+                    0f
+            )
         }
     }
 
     override fun render(window: Window) {
-        renderer.render(window, objects)
+        renderer.render(window, camera, objects)
     }
 
     override fun cleanup() {
@@ -188,6 +168,5 @@ open class Game : GameLogic {
             i.getMesh().cleanUp()
         }
     }
-
 }
 
