@@ -1,6 +1,5 @@
 package itoh.engine
 
-import de.matthiasmann.twl.utils.PNGDecoder
 import java.io.BufferedInputStream
 import java.io.DataInputStream
 import java.io.File

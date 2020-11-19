@@ -42,14 +42,17 @@ open class Renderer {
                 zFar = zFar
         )
         shader.setUniform("projectionMatrix", projectionMatrix)
-        var viewMatrix = transformation.getViewMatrix(camera)
+        val viewMatrix = transformation.getViewMatrix(camera)
 
         shader.setUniform("Texture", 0)
 
         for (i in objects) {
+            val mesh = i.getMesh()
             val modelViewMatrix = transformation.getModelViewMatrix(i, viewMatrix) ?: throw Exception()
             shader.setUniform("modelViewMatrix", modelViewMatrix)
-            i.getMesh().render()
+            shader.setUniform("color", mesh.getColour())
+            shader.setUniform("useColor", if (mesh.isTextured()) 0 else 1)
+            mesh.render()
         }
         shader.unbind()
     }
@@ -58,7 +61,7 @@ open class Renderer {
         shader.cleanup()
     }
 
-    fun initialization(window: Window) {
+    fun initialization() {
         shader = Shader()
         shader.createVertexShader(Utils.loadResource("vertex.glsl"))
         shader.createFragmentShader(Utils.loadResource("fragment.glsl"))
@@ -66,5 +69,7 @@ open class Renderer {
         shader.createUniform("projectionMatrix")
         shader.createUniform("modelViewMatrix")
         shader.createUniform("Texture")
+        shader.createUniform("color")
+        shader.createUniform("useColor")
     }
 }
