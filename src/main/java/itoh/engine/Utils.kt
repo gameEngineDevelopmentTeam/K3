@@ -14,16 +14,5 @@ class Utils {
                     System.getProperty("user.dir") + "/src/main/resources/$fileName"
             ).readText(Charsets.UTF_8)
         }
-
-        fun loadBinary(fileName: String): DataInputStream {
-            println("Load Resource   : $fileName")
-            return DataInputStream(
-                    BufferedInputStream(
-                            FileInputStream(
-                                    System.getProperty("user.dir") + "/src/main/resources/$fileName"
-                            )
-                    )
-            )
-        }
     }
 }
