@@ -3,5 +3,3 @@
 *.class
 *.bak
 /target/
-*.obj
-*.mtl
