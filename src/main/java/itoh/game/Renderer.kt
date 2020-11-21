@@ -50,7 +50,7 @@ open class Renderer {
             val mesh = i.getMesh()
             val modelViewMatrix = transformation.getModelViewMatrix(i, viewMatrix) ?: throw Exception()
             shader.setUniform("modelViewMatrix", modelViewMatrix)
-            shader.setUniform("color", mesh.getColour())
+            shader.setUniform("color", mesh.color)
             shader.setUniform("useColor", if (mesh.isTextured()) 0 else 1)
             mesh.render()
         }

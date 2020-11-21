@@ -5,51 +5,45 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class Camera {
-    private val position: Vector3f
-    private val _rotation: Vector3f
+    private val _position: Vector3f
+    var position: Vector3f
+        get() = _position
+        set(value) {
+            _position.x = value.x
+            _position.y = value.y
+            _position.z = value.z
+        }
 
+    private val _rotation: Vector3f
+    var rotation: Vector3f
+        get() = _rotation
+        set(value) {
+            _rotation.x = value.x
+            _rotation.y = value.y
+            _rotation.z = value.z
+        }
 
 
     constructor() {
-        this.position = Vector3f()
+        this._position = Vector3f()
         this._rotation = Vector3f()
     }
 
     constructor(position: Vector3f, rotation: Vector3f) {
-        this.position = position
+        this._position = position
         this._rotation = rotation
-    }
-
-    fun getPosition(): Vector3f {
-        return position
-    }
-
-    fun setPosition(x: Float, y: Float, z: Float) {
-        position.x = x
-        position.y = y
-        position.z = z
     }
 
     fun movePosition(offsetX: Float, offsetY: Float, offsetZ: Float) {
         if (offsetZ != 0f) {
-            position.x += sin(Math.toRadians(_rotation.y.toDouble())).toFloat() * -1.0f * offsetZ
-            position.z += cos(Math.toRadians(_rotation.y.toDouble())).toFloat() * offsetZ
+            _position.x += sin(Math.toRadians(_rotation.y.toDouble())).toFloat() * -1.0f * offsetZ
+            _position.z += cos(Math.toRadians(_rotation.y.toDouble())).toFloat() * offsetZ
         }
         if (offsetX != 0f) {
-            position.x += sin(Math.toRadians(_rotation.y - 90.toDouble())).toFloat() * -1.0f * offsetX
-            position.z += cos(Math.toRadians(_rotation.y - 90.toDouble())).toFloat() * offsetX
+            _position.x += sin(Math.toRadians(_rotation.y - 90.toDouble())).toFloat() * -1.0f * offsetX
+            _position.z += cos(Math.toRadians(_rotation.y - 90.toDouble())).toFloat() * offsetX
         }
-        position.y += offsetY
-    }
-
-    fun getRotation(): Vector3f {
-        return _rotation
-    }
-
-    fun setRotation(x: Float, y: Float, z: Float) {
-        _rotation.x = x
-        _rotation.y = y
-        _rotation.z = z
+        _position.y += offsetY
     }
 
     fun moveRotation(offsetX: Float, offsetY: Float, offsetZ: Float) {

@@ -13,24 +13,24 @@ class Transformation {
             projectionMatrix.setPerspective(fov, width.toFloat() / height.toFloat(), zNear, zFar)
 
     fun getViewMatrix(camera: Camera): Matrix4f {
-        val cameraPos = camera.getPosition()
-        val rotation = camera.getRotation()
+        val cameraPos = camera.position
+        val rotation = camera.rotation
 
         viewMatrix.identity()
 
-        viewMatrix.rotate(Math.toRadians(rotation!!.x.toDouble()).toFloat(), Vector3f(1f, 0f, 0f))
+        viewMatrix.rotate(Math.toRadians(rotation.x.toDouble()).toFloat(), Vector3f(1f, 0f, 0f))
                 .rotate(Math.toRadians(rotation.y.toDouble()).toFloat(), Vector3f(0f, 1f, 0f))
         viewMatrix.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z)
         return viewMatrix
     }
 
     fun getModelViewMatrix(objects: Obj3D, viewMatrix: Matrix4f?): Matrix4f? {
-        val rotation: Vector3f = objects.getRotation()
-        modelViewMatrix.identity().translate(objects.getPosition())
+        val rotation: Vector3f = objects.rotation
+        modelViewMatrix.identity().translate(objects.position)
                 .rotateX(Math.toRadians(-rotation.x.toDouble()).toFloat())
                 .rotateY(Math.toRadians(-rotation.y.toDouble()).toFloat())
                 .rotateZ(Math.toRadians(-rotation.z.toDouble()).toFloat())
-                .scale(objects.getScale())
+                .scale(objects.scale)
         val viewCurr = Matrix4f(viewMatrix)
         return viewCurr.mul(modelViewMatrix)
     }

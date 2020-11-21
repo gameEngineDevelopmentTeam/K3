@@ -34,17 +34,27 @@ class Mesh constructor(positions: FloatArray, texCoords: FloatArray, normals: Fl
     private val vaoId: Int
     private val vertexCount: Int
     private val vboIdArray: ArrayList<Int> = ArrayList()
-    private var color: Vector3f
-    private lateinit var texture: Texture
+    private var _color: Vector3f
+    var color: Vector3f
+        get() = _color
+        set(value) {
+            _color = value
+        }
 
     private lateinit var posBuffer: FloatBuffer
     private lateinit var texCoordsBuffer: FloatBuffer
     private lateinit var vecNormalBuffer: FloatBuffer
     private lateinit var indicesBuffer: IntBuffer
+    private lateinit var _texture: Texture
+    var texture: Texture
+        get() = _texture
+        set(value) {
+            _texture = value
+        }
 
     init {
         try {
-            color = defaultColor
+            _color = defaultColor
             vertexCount = indices.size
 
             vaoId = glGenVertexArrays()
@@ -96,39 +106,15 @@ class Mesh constructor(positions: FloatArray, texCoords: FloatArray, normals: Fl
 
     internal fun render() {
         glActiveTexture(GL_TEXTURE0)
-        glBindTexture(GL_TEXTURE_2D, texture.getId())
-        glBindVertexArray(getVaoId())
-        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0)
+        glBindTexture(GL_TEXTURE_2D, _texture.id)
+        glBindVertexArray(vaoId)
+        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0)
         glBindVertexArray(0)
         glBindTexture(GL_TEXTURE_2D, 0)
     }
 
     fun isTextured(): Boolean {
-        return true
-    }
-
-    fun getTexture(): Texture? {
-        return texture
-    }
-
-    fun setTexture(texture: Texture) {
-        this.texture = texture
-    }
-
-    fun setColour(color: Vector3f) {
-        this.color = color
-    }
-
-    fun getColour(): Vector3f {
-        return color
-    }
-
-    private fun getVaoId(): Int {
-        return vaoId
-    }
-
-    private fun getVertexCount(): Int {
-        return vertexCount
+        return ::_texture.isInitialized
     }
 
     internal fun cleanUp() {
@@ -139,7 +125,7 @@ class Mesh constructor(positions: FloatArray, texCoords: FloatArray, normals: Fl
         for (i in vboIdArray) {
             glDeleteBuffers(i)
         }
-        texture.cleanup()
+        _texture.cleanup()
         //VAOを削除
         glBindVertexArray(0)
         glDeleteVertexArrays(vaoId)

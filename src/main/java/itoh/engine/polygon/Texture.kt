@@ -17,10 +17,12 @@ import java.nio.ByteBuffer
 import java.nio.IntBuffer
 
 class Texture constructor(fileName: String) {
-    private val id: Int
+    private val _id: Int
+    val id: Int
+        get() = _id
 
     init {
-        id = loadTexture(fileName)
+        _id = loadTexture(fileName)
     }
 
     companion object {
@@ -53,15 +55,11 @@ class Texture constructor(fileName: String) {
         }
     }
 
-    fun bind(){
-        glBindTexture(GL_TEXTURE_2D, id)
-    }
-
-     fun getId(): Int {
-        return id
+    fun bind() {
+        glBindTexture(GL_TEXTURE_2D, _id)
     }
 
     fun cleanup() {
-        glDeleteTextures(id)
+        glDeleteTextures(_id)
     }
 }

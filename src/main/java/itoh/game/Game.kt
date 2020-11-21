@@ -7,7 +7,6 @@ import itoh.engine.polygon.Camera
 import itoh.engine.polygon.Mesh
 import itoh.engine.polygon.Obj3D
 import itoh.engine.polygon.Texture
-import itoh.engine.polygon.geometry.ObjLoader
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.GLFW_KEY_A
 import org.lwjgl.glfw.GLFW.GLFW_KEY_D
@@ -38,10 +37,10 @@ open class Game : GameLogic {
         //val mesh = ObjLoader.("3")
         val mesh = Mesh(floatArrayOf(1f),floatArrayOf(1f),floatArrayOf(1f), intArrayOf(1))
         val texture = Texture("src/main/resources/lennaBlock.png")
-        mesh.setTexture(texture)
+        mesh.texture = texture
         val gameItem = Obj3D(mesh)
-        gameItem.setScale(0.5f)
-        gameItem.setPosition(0f, 0f, -2f)
+        gameItem.scale = 0.5f
+        gameItem.position = Vector3f(0f, 0f, -2f)
         objects = arrayOf(gameItem)
     }
 
@@ -70,8 +69,8 @@ open class Game : GameLogic {
                 cameraInc.y * cameraPosStep,
                 cameraInc.z * cameraPosStep
         )
-        if (mouseInput.getRightButtonPressed()) {
-            val rotationV = mouseInput.getDisplayVec()
+        if (mouseInput.rightButton) {
+            val rotationV = mouseInput.displayVec
             camera.movePosition(
                     rotationV.x * sensitivity,
                     rotationV.y * sensitivity,
@@ -86,7 +85,7 @@ open class Game : GameLogic {
     override fun cleanup() {
         renderer.cleanup()
         for (i in objects) {
-            i.getMesh().cleanUp()
+            i.mesh.cleanUp()
         }
 
     }
