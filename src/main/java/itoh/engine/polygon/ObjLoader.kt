@@ -1,6 +1,6 @@
 package itoh.engine.polygon
 
-import itoh.engine.Utils.Companion.loadResource
+import itoh.engine.Resources.Companion.loadResource
 
 
 class ObjLoader {

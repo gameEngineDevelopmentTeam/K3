@@ -45,7 +45,7 @@ import org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION
 import org.lwjgl.system.MemoryUtil.NULL
 
 
-class Window(private val title: String, private var width: Int, private var height: Int, private var vSync: Boolean) {
+class Window(private val title: String, width: Int, height: Int, vSync: Boolean) {
     private var _windowHandle: Long = 0L
     val windowHandle: Long
         get() = _windowHandle
@@ -56,6 +56,24 @@ class Window(private val title: String, private var width: Int, private var heig
         set(value) {
             _resized = value
         }
+
+    private var _width: Int
+    val width: Int
+        get() = _width
+
+    private var _height: Int
+    val height: Int
+        get() = _height
+
+    private var _vSync: Boolean
+    val vSync: Boolean
+        get() = _vSync
+
+    init {
+        _width = width
+        _height = height
+        _vSync = vSync
+    }
 
     private val k3EngineVersion: String = "0.2.1 build 39"
 
@@ -80,8 +98,8 @@ class Window(private val title: String, private var width: Int, private var heig
         }
 
         glfwSetFramebufferSizeCallback(_windowHandle) { _: Long, width: Int, height: Int ->
-            this.width = width
-            this.height = height
+            _width = width
+            _height = height
             this.resized = true
         }
 
@@ -102,7 +120,7 @@ class Window(private val title: String, private var width: Int, private var heig
 
         glfwMakeContextCurrent(_windowHandle)
 
-        if (getVSync()) {
+        if (_vSync) {
             glfwSwapInterval(1)
         }
 
@@ -134,10 +152,6 @@ class Window(private val title: String, private var width: Int, private var heig
         glfwPollEvents()
     }
 
-    fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
-        glClearColor(r, g, b, a)
-    }
-
     fun getKeyPressed(keyCode: Int): Boolean {
         return glfwGetKey(_windowHandle, keyCode) == GLFW_PRESS
     }
@@ -146,16 +160,8 @@ class Window(private val title: String, private var width: Int, private var heig
         return glfwWindowShouldClose(_windowHandle)
     }
 
-    fun getWidth(): Int {
-        return width
-    }
-
-    fun getHeight(): Int {
-        return height
-    }
-
-    fun getVSync(): Boolean {
-        return vSync
+    fun setClearColor(color: ClearColor) {
+        glClearColor(color.r, color.g, color.b, color.a)
     }
 
     internal fun cleanup() {

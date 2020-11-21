@@ -1,6 +1,6 @@
 package itoh.game
 
-import itoh.engine.Utils
+import itoh.engine.Resources
 import itoh.engine.Window
 import itoh.engine.polygon.Camera
 import itoh.engine.polygon.Obj3D
@@ -29,15 +29,15 @@ open class Renderer {
     open fun render(window: Window, camera: Camera, objects: Array<Obj3D>) {
         clear()
         if (window.resized) {
-            glViewport(0, 0, window.getWidth(), window.getHeight())
+            glViewport(0, 0, window.width, window.height)
             window.resized = true
         }
         shader.bind()
 
         val projectionMatrix: Matrix4f = transformation.getProjectionMatrix(
                 fov = fov,
-                width = window.getWidth(),
-                height = window.getHeight(),
+                width = window.width,
+                height = window.height,
                 zNear = zNear,
                 zFar = zFar
         )
@@ -47,7 +47,7 @@ open class Renderer {
         shader.setUniform("Texture", 0)
 
         for (i in objects) {
-            val mesh = i.getMesh()
+            val mesh = i.mesh
             val modelViewMatrix = transformation.getModelViewMatrix(i, viewMatrix) ?: throw Exception()
             shader.setUniform("modelViewMatrix", modelViewMatrix)
             shader.setUniform("color", mesh.color)
@@ -63,8 +63,8 @@ open class Renderer {
 
     fun initialization() {
         shader = Shader()
-        shader.createVertexShader(Utils.loadResource("vertex.glsl"))
-        shader.createFragmentShader(Utils.loadResource("fragment.glsl"))
+        shader.createVertexShader(Resources.loadResource("vertex.glsl"))
+        shader.createFragmentShader(Resources.loadResource("fragment.glsl"))
         shader.link()
         shader.createUniform("projectionMatrix")
         shader.createUniform("modelViewMatrix")
