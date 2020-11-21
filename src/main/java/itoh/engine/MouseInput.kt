@@ -19,16 +19,16 @@ class MouseInput {
     private var rightButtonPressed = false
 
     fun initialization(window: Window) {
-        glfwSetCursorPosCallback(window.getWindowHandle()) { _: Long, xPos: Double, yPos: Double ->
+        glfwSetCursorPosCallback(window.windowHandle) { _: Long, xPos: Double, yPos: Double ->
             currentPos.x = xPos
             currentPos.y = yPos
         }
 
-        glfwSetCursorEnterCallback(window.getWindowHandle()) { _: Long, entered: Boolean ->
+        glfwSetCursorEnterCallback(window.windowHandle) { _: Long, entered: Boolean ->
             inWindow = entered
         }
 
-        glfwSetMouseButtonCallback(window.getWindowHandle()) { _: Long, button: Int, action: Int, _: Int ->
+        glfwSetMouseButtonCallback(window.windowHandle) { _: Long, button: Int, action: Int, _: Int ->
             leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS
             rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS
         }

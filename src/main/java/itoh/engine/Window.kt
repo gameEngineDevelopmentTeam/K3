@@ -46,8 +46,17 @@ import org.lwjgl.system.MemoryUtil.NULL
 
 
 class Window(private val title: String, private var width: Int, private var height: Int, private var vSync: Boolean) {
-    private var windowHandle: Long = 0L
-    private var resized: Boolean = false
+    private var _windowHandle: Long = 0L
+    val windowHandle: Long
+        get() = _windowHandle
+
+    private var _resized: Boolean = false
+    var resized: Boolean
+        get() = _resized
+        set(value) {
+            _resized = value
+        }
+
     private val k3EngineVersion: String = "0.2.1 build 39"
 
     internal fun initialization() {
@@ -64,19 +73,19 @@ class Window(private val title: String, private var width: Int, private var heig
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE)
 
-        windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
+        _windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
         //windowHandle = glfwCreateWindow(2560, 1080, title, glfwGetPrimaryMonitor(), NULL)
-        if (windowHandle == NULL || windowHandle == 0L) {
+        if (_windowHandle == NULL || _windowHandle == 0L) {
             throw RuntimeException("ウィンドウの作成に失敗しました.")
         }
 
-        glfwSetFramebufferSizeCallback(windowHandle) { _: Long, width: Int, height: Int ->
+        glfwSetFramebufferSizeCallback(_windowHandle) { _: Long, width: Int, height: Int ->
             this.width = width
             this.height = height
-            this.setResized(true)
+            this.resized = true
         }
 
-        glfwSetKeyCallback(windowHandle) { window: Long, key: Int, _: Int, action: Int, _: Int ->
+        glfwSetKeyCallback(_windowHandle) { window: Long, key: Int, _: Int, action: Int, _: Int ->
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true)
             }
@@ -86,18 +95,18 @@ class Window(private val title: String, private var width: Int, private var heig
                 ?: throw RuntimeException("err")
 
         glfwSetWindowPos(
-                windowHandle,
+                _windowHandle,
                 (vidMode.width() - width) / 2,
                 (vidMode.height() - height) / 2
         )
 
-        glfwMakeContextCurrent(windowHandle)
+        glfwMakeContextCurrent(_windowHandle)
 
         if (getVSync()) {
             glfwSwapInterval(1)
         }
 
-        glfwShowWindow(windowHandle)
+        glfwShowWindow(_windowHandle)
 
         createCapabilities()
 
@@ -121,7 +130,7 @@ class Window(private val title: String, private var width: Int, private var heig
     }
 
     internal fun update() {
-        glfwSwapBuffers(windowHandle)
+        glfwSwapBuffers(_windowHandle)
         glfwPollEvents()
     }
 
@@ -129,20 +138,12 @@ class Window(private val title: String, private var width: Int, private var heig
         glClearColor(r, g, b, a)
     }
 
-    fun setResized(resized: Boolean) {
-        this.resized = resized
-    }
-
     fun getKeyPressed(keyCode: Int): Boolean {
-        return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS
+        return glfwGetKey(_windowHandle, keyCode) == GLFW_PRESS
     }
 
     internal fun getWindowShouldClose(): Boolean {
-        return glfwWindowShouldClose(windowHandle)
-    }
-
-    fun getResized(): Boolean {
-        return resized
+        return glfwWindowShouldClose(_windowHandle)
     }
 
     fun getWidth(): Int {
@@ -157,11 +158,7 @@ class Window(private val title: String, private var width: Int, private var heig
         return vSync
     }
 
-    fun getWindowHandle(): Long {
-        return windowHandle
-    }
-
     internal fun cleanup() {
-        glfwDestroyWindow(windowHandle)
+        glfwDestroyWindow(_windowHandle)
     }
 }

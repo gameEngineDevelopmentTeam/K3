@@ -28,9 +28,9 @@ open class Renderer {
 
     open fun render(window: Window, camera: Camera, objects: Array<Obj3D>) {
         clear()
-        if (window.getResized()) {
+        if (window.resized) {
             glViewport(0, 0, window.getWidth(), window.getHeight())
-            window.setResized(false)
+            window.resized = true
         }
         shader.bind()
 

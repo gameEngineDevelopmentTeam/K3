@@ -4,6 +4,7 @@ import itoh.engine.GameLogic
 import itoh.engine.MouseInput
 import itoh.engine.Window
 import itoh.engine.polygon.Camera
+import itoh.engine.polygon.Mesh
 import itoh.engine.polygon.Obj3D
 import itoh.engine.polygon.Texture
 import itoh.engine.polygon.geometry.ObjLoader
@@ -34,7 +35,8 @@ open class Game : GameLogic {
 
     override fun initialization(window: Window) {
         renderer.initialization()
-        val mesh = ObjLoader.("")
+        //val mesh = ObjLoader.("3")
+        val mesh = Mesh(floatArrayOf(1f),floatArrayOf(1f),floatArrayOf(1f), intArrayOf(1))
         val texture = Texture("src/main/resources/lennaBlock.png")
         mesh.setTexture(texture)
         val gameItem = Obj3D(mesh)
