@@ -1,6 +1,6 @@
 package itoh.engine
 
-import itoh.engine.polygon.Texture
+import de.matthiasmann.twl.utils.PNGDecoder
 import java.io.BufferedInputStream
 import java.io.DataInputStream
 import java.io.File
@@ -16,20 +16,15 @@ class Utils {
             ).readText(Charsets.UTF_8)
         }
 
-        fun loadResourceCR(fileName: String): List<String> {
+        fun loadBinary(fileName: String): DataInputStream {
             println("Load Resource   : $fileName")
-            var data =  File(
-                    System.getProperty("user.dir") + "/src/main/resources/$fileName"
-            ).readText(Charsets.UTF_8)
-            return data.split("\n")
+            return DataInputStream(
+                    BufferedInputStream(
+                            FileInputStream(
+                                    System.getProperty("user.dir") + "/src/main/resources/$fileName"
+                            )
+                    )
+            )
         }
     }
-}
-
-/*ex*/
-class TextureEx{
-
-}
-fun Texture.ex(){
-
 }

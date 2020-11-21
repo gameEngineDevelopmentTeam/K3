@@ -1,7 +1,6 @@
 package itoh.engine.polygon
 
 import org.joml.Matrix4f
-import org.joml.Vector3f
 import org.lwjgl.opengl.GL20.GL_COMPILE_STATUS
 import org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER
 import org.lwjgl.opengl.GL20.GL_LINK_STATUS
@@ -21,12 +20,10 @@ import org.lwjgl.opengl.GL20.glGetUniformLocation
 import org.lwjgl.opengl.GL20.glLinkProgram
 import org.lwjgl.opengl.GL20.glShaderSource
 import org.lwjgl.opengl.GL20.glUniform1i
-import org.lwjgl.opengl.GL20.glUniform3f
 import org.lwjgl.opengl.GL20.glUniformMatrix4fv
 import org.lwjgl.opengl.GL20.glUseProgram
 import org.lwjgl.opengl.GL20.glValidateProgram
 import org.lwjgl.system.MemoryStack
-
 
 class Shader {
     private val programId: Int = glCreateProgram()
@@ -50,10 +47,6 @@ class Shader {
 
     fun setUniform(uniformName: String, value: Int) {
         glUniform1i(uniforms[uniformName]!!, value)
-    }
-
-    fun setUniform(uniformName: String, value: Vector3f) {
-        glUniform3f(uniforms[uniformName]!!, value.x, value.y, value.z)
     }
 
     fun createVertexShader(shaderCode: String) {
