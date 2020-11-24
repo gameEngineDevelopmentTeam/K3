@@ -51,6 +51,4 @@ class Camera {
         _rotation.y += offsetY
         _rotation.z += offsetZ
     }
-
-
 }
