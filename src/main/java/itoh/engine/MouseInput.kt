@@ -13,51 +13,48 @@ import org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback
 class MouseInput {
     private val previousPos: Vector2d = Vector2d(-1.0, -1.0)
     private val currentPos: Vector2d = Vector2d(0.0, 0.0)
-    private val displayVec: Vector2f = Vector2f()
     private var inWindow: Boolean = false
-    private var leftButtonPressed = false
-    private var rightButtonPressed = false
+
+    private val _displayVec: Vector2f = Vector2f()
+    val displayVec: Vector2f
+        get() = _displayVec
+
+    private var _leftButton = false
+    val leftButton: Boolean
+        get() = _leftButton
+
+    private var _rightButton = false
+    val rightButton: Boolean
+        get() = _rightButton
 
     fun initialization(window: Window) {
-        glfwSetCursorPosCallback(window.getWindowHandle()) { _: Long, xPos: Double, yPos: Double ->
+        glfwSetCursorPosCallback(window.windowHandle) { _: Long, xPos: Double, yPos: Double ->
             currentPos.x = xPos
             currentPos.y = yPos
         }
 
-        glfwSetCursorEnterCallback(window.getWindowHandle()) { _: Long, entered: Boolean ->
+        glfwSetCursorEnterCallback(window.windowHandle) { _: Long, entered: Boolean ->
             inWindow = entered
         }
 
-        glfwSetMouseButtonCallback(window.getWindowHandle()) { _: Long, button: Int, action: Int, _: Int ->
-            leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS
-            rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS
+        glfwSetMouseButtonCallback(window.windowHandle) { _: Long, button: Int, action: Int, _: Int ->
+            _leftButton = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS
+            _rightButton = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS
         }
     }
 
     fun input(window: Window) {
-        displayVec.x = 0f
-        displayVec.y = 0f
+        _displayVec.x = 0f
+        _displayVec.y = 0f
         if (previousPos.x > 0f && previousPos.y > 0f && inWindow) {
             val dX = currentPos.x - previousPos.x
             val dY = currentPos.y - previousPos.y
             val rotateX = dX != 0.0
             val rotateY = dY != 0.0
-            if (rotateX) displayVec.y = dX.toFloat()
-            if (rotateY) displayVec.x = dY.toFloat()
+            if (rotateX) _displayVec.y = dX.toFloat()
+            if (rotateY) _displayVec.x = dY.toFloat()
         }
         previousPos.x = currentPos.x
         previousPos.y = currentPos.y
-    }
-
-    fun getLeftButtonPressed(): Boolean {
-        return leftButtonPressed
-    }
-
-    fun getRightButtonPressed(): Boolean {
-        return rightButtonPressed
-    }
-
-    fun getDisplayVec(): Vector2f {
-        return displayVec
     }
 }

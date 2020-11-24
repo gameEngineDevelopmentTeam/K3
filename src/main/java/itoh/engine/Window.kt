@@ -45,9 +45,36 @@ import org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION
 import org.lwjgl.system.MemoryUtil.NULL
 
 
-class Window(private val title: String, private var width: Int, private var height: Int, private var vSync: Boolean) {
-    private var windowHandle: Long = 0L
-    private var resized: Boolean = false
+class Window(private val title: String, width: Int, height: Int, vSync: Boolean) {
+    private var _windowHandle: Long = 0L
+    val windowHandle: Long
+        get() = _windowHandle
+
+    private var _resized: Boolean = false
+    var resized: Boolean
+        get() = _resized
+        set(value) {
+            _resized = value
+        }
+
+    private var _width: Int
+    val width: Int
+        get() = _width
+
+    private var _height: Int
+    val height: Int
+        get() = _height
+
+    private var _vSync: Boolean
+    val vSync: Boolean
+        get() = _vSync
+
+    init {
+        _width = width
+        _height = height
+        _vSync = vSync
+    }
+
     private val k3EngineVersion: String = "0.2.1 build 39"
 
     internal fun initialization() {
@@ -64,19 +91,19 @@ class Window(private val title: String, private var width: Int, private var heig
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE)
 
-        windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
+        _windowHandle = glfwCreateWindow(width, height, title, NULL, NULL)
         //windowHandle = glfwCreateWindow(2560, 1080, title, glfwGetPrimaryMonitor(), NULL)
-        if (windowHandle == NULL || windowHandle == 0L) {
+        if (_windowHandle == NULL || _windowHandle == 0L) {
             throw RuntimeException("ウィンドウの作成に失敗しました.")
         }
 
-        glfwSetFramebufferSizeCallback(windowHandle) { _: Long, width: Int, height: Int ->
-            this.width = width
-            this.height = height
-            this.setResized(true)
+        glfwSetFramebufferSizeCallback(_windowHandle) { _: Long, width: Int, height: Int ->
+            _width = width
+            _height = height
+            this.resized = true
         }
 
-        glfwSetKeyCallback(windowHandle) { window: Long, key: Int, _: Int, action: Int, _: Int ->
+        glfwSetKeyCallback(_windowHandle) { window: Long, key: Int, _: Int, action: Int, _: Int ->
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true)
             }
@@ -86,18 +113,18 @@ class Window(private val title: String, private var width: Int, private var heig
                 ?: throw RuntimeException("err")
 
         glfwSetWindowPos(
-                windowHandle,
+                _windowHandle,
                 (vidMode.width() - width) / 2,
                 (vidMode.height() - height) / 2
         )
 
-        glfwMakeContextCurrent(windowHandle)
+        glfwMakeContextCurrent(_windowHandle)
 
-        if (getVSync()) {
+        if (_vSync) {
             glfwSwapInterval(1)
         }
 
-        glfwShowWindow(windowHandle)
+        glfwShowWindow(_windowHandle)
 
         createCapabilities()
 
@@ -121,47 +148,23 @@ class Window(private val title: String, private var width: Int, private var heig
     }
 
     internal fun update() {
-        glfwSwapBuffers(windowHandle)
+        glfwSwapBuffers(_windowHandle)
         glfwPollEvents()
     }
 
-    fun setClearColor(r: Float, g: Float, b: Float, a: Float) {
-        glClearColor(r, g, b, a)
-    }
-
-    fun setResized(resized: Boolean) {
-        this.resized = resized
-    }
-
     fun getKeyPressed(keyCode: Int): Boolean {
-        return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS
+        return glfwGetKey(_windowHandle, keyCode) == GLFW_PRESS
     }
 
     internal fun getWindowShouldClose(): Boolean {
-        return glfwWindowShouldClose(windowHandle)
+        return glfwWindowShouldClose(_windowHandle)
     }
 
-    fun getResized(): Boolean {
-        return resized
-    }
-
-    fun getWidth(): Int {
-        return width
-    }
-
-    fun getHeight(): Int {
-        return height
-    }
-
-    fun getVSync(): Boolean {
-        return vSync
-    }
-
-    fun getWindowHandle(): Long {
-        return windowHandle
+    fun setClearColor(color: ClearColor) {
+        glClearColor(color.r, color.g, color.b, color.a)
     }
 
     internal fun cleanup() {
-        glfwDestroyWindow(windowHandle)
+        glfwDestroyWindow(_windowHandle)
     }
 }

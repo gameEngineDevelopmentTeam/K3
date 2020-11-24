@@ -32,7 +32,7 @@ open class GameEngine(
     }
 
     private fun gameLoop() {
-        var accumulator: Float = 0f
+        var accumulator = 0f
         val interval: Float = 1f / targetUPS.toFloat()
         while (!window.getWindowShouldClose()) {
             accumulator += timer.getElapsedTime()
@@ -42,7 +42,7 @@ open class GameEngine(
                 accumulator -= interval
             }
             render()
-            if (!window.getVSync()) {
+            if (!window.vSync) {
                 sync()
             }
         }

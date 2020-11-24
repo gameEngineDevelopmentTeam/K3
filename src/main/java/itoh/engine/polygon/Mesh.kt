@@ -1,5 +1,6 @@
 package itoh.engine.polygon
 
+import org.joml.Vector3f
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
@@ -25,17 +26,35 @@ import org.lwjgl.system.MemoryUtil
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
-class Mesh constructor(positions: FloatArray, texCoords: FloatArray, indices: IntArray, private val texture: Texture) {
+class Mesh constructor(positions: FloatArray, texCoords: FloatArray, normals: FloatArray, indices: IntArray) {
+    companion object {
+        private val defaultColor = Vector3f(1.0f, 1.0f, 1.0f)
+    }
+
     private val vaoId: Int
     private val vertexCount: Int
     private val vboIdArray: ArrayList<Int> = ArrayList()
+    private var _color: Vector3f
+    var color: Vector3f
+        get() = _color
+        set(value) {
+            _color = value
+        }
 
     private lateinit var posBuffer: FloatBuffer
     private lateinit var texCoordsBuffer: FloatBuffer
+    private lateinit var vecNormalBuffer: FloatBuffer
     private lateinit var indicesBuffer: IntBuffer
+    private lateinit var _texture: Texture
+    var texture: Texture
+        get() = _texture
+        set(value) {
+            _texture = value
+        }
 
     init {
         try {
+            _color = defaultColor
             vertexCount = indices.size
 
             vaoId = glGenVertexArrays()
@@ -61,6 +80,15 @@ class Mesh constructor(positions: FloatArray, texCoords: FloatArray, indices: In
 
             vboId = glGenBuffers()
             vboIdArray.add(vboId)
+            vecNormalBuffer = MemoryUtil.memAllocFloat(normals.size)
+            vecNormalBuffer.put(normals).flip()
+            glBindBuffer(GL_ARRAY_BUFFER, vboId)
+            glBufferData(GL_ARRAY_BUFFER, vecNormalBuffer, GL_STATIC_DRAW)
+            glEnableVertexAttribArray(2)
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0)
+
+            vboId = glGenBuffers()
+            vboIdArray.add(vboId)
             indicesBuffer = MemoryUtil.memAllocInt(indices.size)
             indicesBuffer.put(indices).flip()
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboId)
@@ -71,24 +99,22 @@ class Mesh constructor(positions: FloatArray, texCoords: FloatArray, indices: In
         } finally {
             MemoryUtil.memFree(posBuffer)
             MemoryUtil.memFree(texCoordsBuffer)
+            MemoryUtil.memFree(vecNormalBuffer)
             MemoryUtil.memFree(indicesBuffer)
         }
     }
 
-    internal fun render(){
+    internal fun render() {
         glActiveTexture(GL_TEXTURE0)
-        glBindTexture(GL_TEXTURE_2D, texture.getId())
-        glBindVertexArray(getVaoId())
-        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0)
+        glBindTexture(GL_TEXTURE_2D, _texture.id)
+        glBindVertexArray(vaoId)
+        glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0)
         glBindVertexArray(0)
+        glBindTexture(GL_TEXTURE_2D, 0)
     }
 
-    private fun getVaoId(): Int {
-        return vaoId
-    }
-
-    private fun getVertexCount(): Int {
-        return vertexCount
+    fun isTextured(): Boolean {
+        return ::_texture.isInitialized
     }
 
     internal fun cleanUp() {
@@ -99,6 +125,7 @@ class Mesh constructor(positions: FloatArray, texCoords: FloatArray, indices: In
         for (i in vboIdArray) {
             glDeleteBuffers(i)
         }
+        _texture.cleanup()
         //VAOを削除
         glBindVertexArray(0)
         glDeleteVertexArrays(vaoId)

@@ -1,6 +1,6 @@
 package itoh.game
 
-import itoh.engine.Utils
+import itoh.engine.Resources
 import itoh.engine.Window
 import itoh.engine.polygon.Camera
 import itoh.engine.polygon.Obj3D
@@ -28,28 +28,31 @@ open class Renderer {
 
     open fun render(window: Window, camera: Camera, objects: Array<Obj3D>) {
         clear()
-        if (window.getResized()) {
-            glViewport(0, 0, window.getWidth(), window.getHeight())
-            window.setResized(false)
+        if (window.resized) {
+            glViewport(0, 0, window.width, window.height)
+            window.resized = true
         }
         shader.bind()
 
         val projectionMatrix: Matrix4f = transformation.getProjectionMatrix(
                 fov = fov,
-                width = window.getWidth(),
-                height = window.getHeight(),
+                width = window.width,
+                height = window.height,
                 zNear = zNear,
                 zFar = zFar
         )
         shader.setUniform("projectionMatrix", projectionMatrix)
-        var viewMatrix = transformation.getViewMatrix(camera)
+        val viewMatrix = transformation.getViewMatrix(camera)
 
         shader.setUniform("Texture", 0)
 
         for (i in objects) {
+            val mesh = i.mesh
             val modelViewMatrix = transformation.getModelViewMatrix(i, viewMatrix) ?: throw Exception()
             shader.setUniform("modelViewMatrix", modelViewMatrix)
-            i.getMesh().render()
+            shader.setUniform("color", mesh.color)
+            shader.setUniform("useColor", if (mesh.isTextured()) 0 else 1)
+            mesh.render()
         }
         shader.unbind()
     }
@@ -58,13 +61,15 @@ open class Renderer {
         shader.cleanup()
     }
 
-    fun initialization(window: Window) {
+    fun initialization() {
         shader = Shader()
-        shader.createVertexShader(Utils.loadResource("vertex.glsl"))
-        shader.createFragmentShader(Utils.loadResource("fragment.glsl"))
+        shader.createVertexShader(Resources.loadResource("vertex.glsl"))
+        shader.createFragmentShader(Resources.loadResource("fragment.glsl"))
         shader.link()
         shader.createUniform("projectionMatrix")
         shader.createUniform("modelViewMatrix")
         shader.createUniform("Texture")
+        shader.createUniform("color")
+        shader.createUniform("useColor")
     }
 }

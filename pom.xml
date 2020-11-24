@@ -8,15 +8,14 @@
     <artifactId>kotlinGameEngine</artifactId>
     <version>1.0</version>
 
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
         <lwjgl.version>3.2.3</lwjgl.version>
         <joml.version>1.9.25</joml.version>
-        <native.target>natives-windows</native.target>
-        <kotlin.version>1.4.10</kotlin.version>
+        <native.target>natives-macos</native.target>
+        <kotlin.version>1.4.20</kotlin.version>
         <pngdecoder.version>1.0</pngdecoder.version>
     </properties>
 
