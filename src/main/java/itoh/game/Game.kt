@@ -28,7 +28,7 @@ open class Game : GameLogic {
 
     override fun initialization(window: Window) {
         renderer.initialization()
-        val mesh = objLoader.objLoader("cube.obj")
+        val mesh = objLoader.objLoader("bunny.obj")
         val texture = Texture("src/main/resources/lennaBlock.png")
         mesh.texture = texture
         val gameItem = Obj3D(mesh)
