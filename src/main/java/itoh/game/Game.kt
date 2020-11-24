@@ -3,10 +3,7 @@ package itoh.game
 import itoh.engine.GameLogic
 import itoh.engine.MouseInput
 import itoh.engine.Window
-import itoh.engine.polygon.Camera
-import itoh.engine.polygon.Mesh
-import itoh.engine.polygon.Obj3D
-import itoh.engine.polygon.Texture
+import itoh.engine.polygon.*
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.GLFW_KEY_A
 import org.lwjgl.glfw.GLFW.GLFW_KEY_D
@@ -18,24 +15,20 @@ import org.lwjgl.glfw.GLFW.GLFW_KEY_Z
 
 open class Game : GameLogic {
     companion object {
-        private val sensitivity = 0.01f
-        private val cameraPosStep = 0.05f
+        private const val sensitivity = 0.01f
+        private const val cameraPosStep = 0.05f
     }
 
-    private var rX: Int = 0
-    private var rY: Int = 0
-    private var rZ: Int = 0
-    private var r: Boolean = false
     private val renderer: Renderer = Renderer()
     private lateinit var objects: Array<Obj3D>
     private val cameraInc: Vector3f = Vector3f()
     private val camera: Camera = Camera()
+    private val  objLoader:ObjLoader = ObjLoader()
 
 
     override fun initialization(window: Window) {
         renderer.initialization()
-        //val mesh = ObjLoader.("3")
-        val mesh = Mesh(floatArrayOf(1f),floatArrayOf(1f),floatArrayOf(1f), intArrayOf(1))
+        val mesh = objLoader.objLoader("cube.obj")
         val texture = Texture("src/main/resources/lennaBlock.png")
         mesh.texture = texture
         val gameItem = Obj3D(mesh)
