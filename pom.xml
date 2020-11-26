@@ -8,6 +8,13 @@
     <artifactId>kotlinGameEngine</artifactId>
     <version>1.0</version>
 
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+    </repositories>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>14</maven.compiler.source>
@@ -16,8 +23,11 @@
         <joml.version>1.9.25</joml.version>
         <native.target>natives-macos</native.target>
         <kotlin.version>1.4.20</kotlin.version>
-        <pngdecoder.version>1.0</pngdecoder.version>
+        <imgui.java.version>1.79-1.4.0</imgui.java.version>
+        <imguiNatives>imgui-java-natives-macos</imguiNatives>
     </properties>
+
+
 
     <dependencyManagement>
         <dependencies>
@@ -98,10 +108,22 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- imgui-java -->
         <dependency>
-            <groupId>org.l33tlabs.twl</groupId>
-            <artifactId>pngdecoder</artifactId>
-            <version>${pngdecoder.version}</version>
+            <groupId>io.imgui.java</groupId>
+            <artifactId>imgui-java-binding</artifactId>
+            <version>${imgui.java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.imgui.java</groupId>
+            <artifactId>imgui-java-lwjgl3</artifactId>
+            <version>${imgui.java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.imgui.java</groupId>
+            <artifactId>${imguiNatives}</artifactId>
+            <version>${imgui.java.version}</version>
         </dependency>
     </dependencies>
 

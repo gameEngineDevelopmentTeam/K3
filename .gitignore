@@ -3,3 +3,5 @@
 *.class
 *.bak
 /target/
+*.log
+*.iml
