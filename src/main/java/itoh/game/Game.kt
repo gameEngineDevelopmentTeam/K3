@@ -5,12 +5,7 @@ import itoh.engine.MouseInput
 import itoh.engine.Window
 import itoh.engine.polygon.*
 import org.joml.Vector3f
-import org.lwjgl.glfw.GLFW.GLFW_KEY_A
-import org.lwjgl.glfw.GLFW.GLFW_KEY_D
-import org.lwjgl.glfw.GLFW.GLFW_KEY_S
-import org.lwjgl.glfw.GLFW.GLFW_KEY_W
-import org.lwjgl.glfw.GLFW.GLFW_KEY_X
-import org.lwjgl.glfw.GLFW.GLFW_KEY_Z
+import org.lwjgl.glfw.GLFW.*
 
 
 open class Game : GameLogic {
@@ -22,6 +17,7 @@ open class Game : GameLogic {
     private val renderer: Renderer = Renderer()
     private lateinit var objects: Array<Obj3D>
     private val cameraInc: Vector3f = Vector3f()
+    private val cameraRo:Vector3f = Vector3f()
     private val camera: Camera = Camera()
     private val  objLoader:ObjLoader = ObjLoader()
 
@@ -39,6 +35,7 @@ open class Game : GameLogic {
 
     override fun input(window: Window, mouseInput: MouseInput) {
         cameraInc.set(0f, 0f, 0f)
+        cameraRo.set(0f,0f,0f)
         if (window.getKeyPressed(GLFW_KEY_W)) {
             cameraInc.z = -1f
         } else if (window.getKeyPressed(GLFW_KEY_S)) {
@@ -54,6 +51,14 @@ open class Game : GameLogic {
         } else if (window.getKeyPressed(GLFW_KEY_X)) {
             cameraInc.y = 1f
         }
+        if(window.getKeyPressed(GLFW_KEY_R)) cameraRo.x = 1f
+        if(window.getKeyPressed(GLFW_KEY_T)) cameraRo.y = 1f
+        if(window.getKeyPressed(GLFW_KEY_Y)) cameraRo.z = 1f
+        if(window.getKeyPressed(GLFW_KEY_P)) {
+            cameraInc.x = -camera.position.x
+            cameraInc.y = -camera.position.y
+            cameraInc.z = -camera.position.z
+        }
     }
 
     override fun update(interval: Float, mouseInput: MouseInput) {
@@ -61,6 +66,11 @@ open class Game : GameLogic {
                 cameraInc.x * cameraPosStep,
                 cameraInc.y * cameraPosStep,
                 cameraInc.z * cameraPosStep
+        )
+        camera.moveRotation(
+                cameraRo.x,
+                cameraRo.y,
+                cameraRo.z
         )
         if (mouseInput.rightButton) {
             val rotationV = mouseInput.displayVec
