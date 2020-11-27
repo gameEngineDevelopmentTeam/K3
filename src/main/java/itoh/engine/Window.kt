@@ -32,15 +32,7 @@ import org.lwjgl.glfw.GLFW.glfwWindowShouldClose
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.glfw.GLFWVidMode
 import org.lwjgl.opengl.GL.createCapabilities
-import org.lwjgl.opengl.GL11.GL_DEPTH_TEST
-import org.lwjgl.opengl.GL11.GL_FALSE
-import org.lwjgl.opengl.GL11.GL_RENDERER
-import org.lwjgl.opengl.GL11.GL_TRUE
-import org.lwjgl.opengl.GL11.GL_VENDOR
-import org.lwjgl.opengl.GL11.GL_VERSION
-import org.lwjgl.opengl.GL11.glClearColor
-import org.lwjgl.opengl.GL11.glEnable
-import org.lwjgl.opengl.GL11.glGetString
+import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20.GL_SHADING_LANGUAGE_VERSION
 import org.lwjgl.system.MemoryUtil.NULL
 
@@ -132,6 +124,7 @@ class Window(private val title: String, width: Int, height: Int, vSync: Boolean)
 
         glClearColor(.3f, .3f, .3f, .3f)
         glEnable(GL_DEPTH_TEST)
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
     }
 
     private fun versionPrint() {
