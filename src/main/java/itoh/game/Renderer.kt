@@ -6,11 +6,12 @@ import itoh.engine.polygon.Camera
 import itoh.engine.polygon.Obj3D
 import itoh.engine.polygon.Shader
 import itoh.engine.polygon.Transformation
+import itoh.engine.polygon.light.PointLight
 import org.joml.Matrix4f
-import org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT
-import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
-import org.lwjgl.opengl.GL11.glClear
-import org.lwjgl.opengl.GL11.glViewport
+import org.joml.Vector3f
+import org.joml.Vector4f
+import org.lwjgl.opengl.GL11.*
+
 
 open class Renderer {
     companion object {
@@ -21,12 +22,13 @@ open class Renderer {
 
     private val transformation: Transformation = Transformation()
     private lateinit var shader: Shader
+    private var specularPower:Float=10f
 
     open fun clear() {
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
     }
 
-    open fun render(window: Window, camera: Camera, objects: Array<Obj3D>) {
+    open fun render(window: Window, camera: Camera, objects: Array<Obj3D>, ambientLight: Vector3f,pointLight: PointLight) {
         clear()
         if (window.resized) {
             glViewport(0, 0, window.width, window.height)
@@ -43,6 +45,16 @@ open class Renderer {
         )
         shader.setUniform("projectionMatrix", projectionMatrix)
         val viewMatrix = transformation.getViewMatrix(camera)
+        shader.setUniform("ambientLight", ambientLight)
+        shader.setUniform("specularPower", specularPower)
+        val currPointLight = PointLight(pointLight)
+        val lightPos = currPointLight.position
+        val aux = Vector4f(lightPos, 1f)
+        aux.mul(viewMatrix)
+        lightPos!!.x = aux.x
+        lightPos.y = aux.y
+        lightPos.z = aux.z
+        shader.setUniform("pointLight", currPointLight)
 
         shader.setUniform("Texture", 0)
 
@@ -50,8 +62,7 @@ open class Renderer {
             val mesh = i.mesh
             val modelViewMatrix = transformation.getModelViewMatrix(i, viewMatrix) ?: throw Exception()
             shader.setUniform("modelViewMatrix", modelViewMatrix)
-            shader.setUniform("color", mesh.color)
-            shader.setUniform("useColor", if (mesh.isTextured()) 0 else 1)
+            shader.setUniform("material", mesh.material)
             mesh.render()
         }
         shader.unbind()
@@ -69,7 +80,9 @@ open class Renderer {
         shader.createUniform("projectionMatrix")
         shader.createUniform("modelViewMatrix")
         shader.createUniform("Texture")
-        shader.createUniform("color")
-        shader.createUniform("useColor")
+        shader.createMaterialUniform("material")
+        shader.createUniform("specularPower")
+        shader.createUniform("ambientLight")
+        shader.createPointLightUniform("pointLight")
     }
 }
