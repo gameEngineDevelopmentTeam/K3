@@ -22,7 +22,7 @@ class Shader {
     }
 
     fun createPointLightUniform(uniformName: String) {
-        createUniform("$uniformName.colour")
+        createUniform("$uniformName.color")
         createUniform("$uniformName.position")
         createUniform("$uniformName.intensity")
         createUniform("$uniformName.att.constant")
@@ -71,7 +71,7 @@ class Shader {
     }
 
     fun setUniform(uniformName: String, pointLight: PointLight) {
-        setUniform("$uniformName.colour", pointLight.color!!)
+        setUniform("$uniformName.color", pointLight.color!!)
         setUniform("$uniformName.position", pointLight.position!!)
         setUniform("$uniformName.intensity", pointLight.intensity)
         val att = pointLight.attenuation
@@ -81,9 +81,9 @@ class Shader {
     }
 
     fun setUniform(uniformName: String, material: Material) {
-        setUniform("$uniformName.ambient", material.ambientColour)
-        setUniform("$uniformName.diffuse", material.diffuseColour)
-        setUniform("$uniformName.specular", material.specularColour)
+        setUniform("$uniformName.ambient", material.ambientColor)
+        setUniform("$uniformName.diffuse", material.diffuseColor)
+        setUniform("$uniformName.specular", material.specularColor)
         setUniform("$uniformName.hasTexture", if (material.isTextured) 1 else 0)
         setUniform("$uniformName.reflectance", material.reflectance)
     }

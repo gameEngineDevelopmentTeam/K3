@@ -77,7 +77,7 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal)
 
 void main()
 {
-    setupColours(material, outTexCoord);
+    setupColours(material, outTexPos);
 
     vec4 diffuseSpecularComp = calcPointLight(pointLight, mvVertexPos, mvVertexNormal);
 

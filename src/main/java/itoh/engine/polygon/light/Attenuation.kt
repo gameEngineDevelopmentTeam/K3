@@ -1,4 +1,3 @@
 package itoh.engine.polygon.light
 
-class Attenuation {
-}
+data class Attenuation(var constant: Float, var linear: Float, var exponent: Float)

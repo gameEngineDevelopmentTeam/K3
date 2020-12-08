@@ -16,8 +16,6 @@ class PointLight(color: Vector3f?, position: Vector3f?, intensity: Float) {
             pointLight.intensity, pointLight.attenuation) {
     }
 
-    class Attenuation(var constant: Float, var linear: Float, var exponent: Float)
-
     init {
         attenuation = Attenuation(1f, 0f, 0f)
         this.color = color
