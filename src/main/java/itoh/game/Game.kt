@@ -7,7 +7,6 @@ import itoh.engine.polygon.*
 import itoh.engine.polygon.light.PointLight
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
-import java.awt.SystemColor
 
 
 open class Game : GameLogic {
