@@ -1,30 +1,10 @@
 package itoh.engine.polygon
 
+import itoh.engine.polygon.light.PointLight
 import org.joml.Matrix4f
 import org.joml.Vector3f
-import org.lwjgl.opengl.GL20.GL_COMPILE_STATUS
-import org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER
-import org.lwjgl.opengl.GL20.GL_LINK_STATUS
-import org.lwjgl.opengl.GL20.GL_VALIDATE_STATUS
-import org.lwjgl.opengl.GL20.GL_VERTEX_SHADER
-import org.lwjgl.opengl.GL20.glAttachShader
-import org.lwjgl.opengl.GL20.glCompileShader
-import org.lwjgl.opengl.GL20.glCreateProgram
-import org.lwjgl.opengl.GL20.glCreateShader
-import org.lwjgl.opengl.GL20.glDeleteProgram
-import org.lwjgl.opengl.GL20.glDetachShader
-import org.lwjgl.opengl.GL20.glGetProgramInfoLog
-import org.lwjgl.opengl.GL20.glGetProgrami
-import org.lwjgl.opengl.GL20.glGetShaderInfoLog
-import org.lwjgl.opengl.GL20.glGetShaderi
-import org.lwjgl.opengl.GL20.glGetUniformLocation
-import org.lwjgl.opengl.GL20.glLinkProgram
-import org.lwjgl.opengl.GL20.glShaderSource
-import org.lwjgl.opengl.GL20.glUniform1i
-import org.lwjgl.opengl.GL20.glUniform3f
-import org.lwjgl.opengl.GL20.glUniformMatrix4fv
-import org.lwjgl.opengl.GL20.glUseProgram
-import org.lwjgl.opengl.GL20.glValidateProgram
+import org.joml.Vector4f
+import org.lwjgl.opengl.GL20.*
 import org.lwjgl.system.MemoryStack
 
 
@@ -39,6 +19,23 @@ class Shader {
             throw Exception("uniformが見つかりません:$uniformName")
         }
         uniforms[uniformName] = uniformLocation
+    }
+
+    fun createPointLightUniform(uniformName: String) {
+        createUniform("$uniformName.colour")
+        createUniform("$uniformName.position")
+        createUniform("$uniformName.intensity")
+        createUniform("$uniformName.att.constant")
+        createUniform("$uniformName.att.linear")
+        createUniform("$uniformName.att.exponent")
+    }
+
+    fun createMaterialUniform(uniformName: String) {
+        createUniform("$uniformName.ambient")
+        createUniform("$uniformName.diffuse")
+        createUniform("$uniformName.specular")
+        createUniform("$uniformName.hasTexture")
+        createUniform("$uniformName.reflectance")
     }
 
     fun setUniform(uniformName: String, value: Matrix4f) {
@@ -56,6 +53,11 @@ class Shader {
         glUniform3f(uniforms[uniformName]!!, value.x, value.y, value.z)
     }
 
+    fun setUniform(uniformName: String?, value: Float) {
+        glUniform1f(uniforms[uniformName]!!, value)
+    }
+
+
     fun createVertexShader(shaderCode: String) {
         vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER)
     }
@@ -63,6 +65,29 @@ class Shader {
     fun createFragmentShader(shaderCode: String) {
         fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER)
     }
+
+    fun setUniform(uniformName: String?, value: Vector4f) {
+        glUniform4f(uniforms[uniformName]!!, value.x, value.y, value.z, value.w)
+    }
+
+    fun setUniform(uniformName: String, pointLight: PointLight) {
+        setUniform("$uniformName.colour", pointLight.color!!)
+        setUniform("$uniformName.position", pointLight.position!!)
+        setUniform("$uniformName.intensity", pointLight.intensity)
+        val att = pointLight.attenuation
+        setUniform("$uniformName.att.constant", att.constant)
+        setUniform("$uniformName.att.linear", att.linear)
+        setUniform("$uniformName.att.exponent", att.exponent)
+    }
+
+    fun setUniform(uniformName: String, material: Material) {
+        setUniform("$uniformName.ambient", material.ambientColour)
+        setUniform("$uniformName.diffuse", material.diffuseColour)
+        setUniform("$uniformName.specular", material.specularColour)
+        setUniform("$uniformName.hasTexture", if (material.isTextured) 1 else 0)
+        setUniform("$uniformName.reflectance", material.reflectance)
+    }
+
 
     private fun createShader(shaderCode: String, shaderType: Int): Int {
         val shaderId = glCreateShader(shaderType)

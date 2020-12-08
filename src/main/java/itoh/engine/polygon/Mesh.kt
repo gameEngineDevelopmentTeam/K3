@@ -1,6 +1,5 @@
 package itoh.engine.polygon
 
-import org.joml.Vector3f
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
@@ -27,34 +26,26 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 class Mesh constructor(positions: FloatArray, texCoords: FloatArray, normals: FloatArray, indices: IntArray) {
-    companion object {
-        private val defaultColor = Vector3f(1.0f, 1.0f, 1.0f)
-    }
+
 
     private val vaoId: Int
     private val vertexCount: Int
     private val vboIdArray: ArrayList<Int> = ArrayList()
-    private var _color: Vector3f
-    var color: Vector3f
-        get() = _color
-        set(value) {
-            _color = value
-        }
+    private var _material:Material= Material()
+    var material:Material
+    get() = _material
+    set(value) {
+        _material=value
+    }
+
 
     private lateinit var posBuffer: FloatBuffer
     private lateinit var texCoordsBuffer: FloatBuffer
     private lateinit var vecNormalBuffer: FloatBuffer
     private lateinit var indicesBuffer: IntBuffer
-    private lateinit var _texture: Texture
-    var texture: Texture
-        get() = _texture
-        set(value) {
-            _texture = value
-        }
 
     init {
         try {
-            _color = defaultColor
             vertexCount = indices.size
 
             vaoId = glGenVertexArrays()
@@ -105,17 +96,17 @@ class Mesh constructor(positions: FloatArray, texCoords: FloatArray, normals: Fl
     }
 
     internal fun render() {
+        val texture = material.texture
         glActiveTexture(GL_TEXTURE0)
-        glBindTexture(GL_TEXTURE_2D, _texture.id)
+        if (texture != null) {
+            glBindTexture(GL_TEXTURE_2D, texture.id)
+        }
         glBindVertexArray(vaoId)
         glDrawElements(GL_TRIANGLES, vertexCount, GL_UNSIGNED_INT, 0)
         glBindVertexArray(0)
         glBindTexture(GL_TEXTURE_2D, 0)
     }
 
-    fun isTextured(): Boolean {
-        return ::_texture.isInitialized
-    }
 
     internal fun cleanUp() {
         glDisableVertexAttribArray(0)
@@ -125,7 +116,7 @@ class Mesh constructor(positions: FloatArray, texCoords: FloatArray, normals: Fl
         for (i in vboIdArray) {
             glDeleteBuffers(i)
         }
-        _texture.cleanup()
+        material.texture?.cleanup()
         //VAOを削除
         glBindVertexArray(0)
         glDeleteVertexArrays(vaoId)
